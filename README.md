@@ -88,7 +88,7 @@ Sample configuration entry for your `~/MagicMirror/config/config.js` with option
 ## Licence
 MIT License
 
-Copyright (c) 2016 yo-less (https://github.com/yo-less/)
+Copyright (c) 2016 Winston (https://github.com/winstonma/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
