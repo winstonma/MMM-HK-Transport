@@ -9,7 +9,7 @@ Lastly, why not join in on our discussions at the official [MagicMirror<sup>2</s
 
 ## Screenshots
 
-![German version](screenshots/screenshot_de.png)
+![Chinese version](screenshots/screenshot_zh.png)
 ![English version](screenshots/screenshot_en.png)
 
 ## Current version

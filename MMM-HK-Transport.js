@@ -195,7 +195,7 @@ Module.register("MMM-HK-Transport", {
     				}
     			} else if (etaObj.wait_headway_seconds_range) {
     				var [rangeBottom, rangeTop] = etaObj.wait_headway_seconds_range;
-    				var midStr = (rangeBottom == rangeTop)? rangeBottom/60: rangeBottom/60 + "—" + rangeTop/60;
+    				var midStr = (rangeBottom == rangeTop)? Math.floor(rangeBottom/60): Math.floor(rangeBottom/60) + "—" + Math.floor(rangeTop/60);
     				etaArray.push(this.translate("EVERY") + midStr + this.translate("MINUTES"));
     			}
     		}
