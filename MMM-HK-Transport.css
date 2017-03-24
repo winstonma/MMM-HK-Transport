@@ -1,0 +1,36 @@
+.MMM-HK-Transport .table {
+    border-spacing: 0px 0px;
+    border-collapse: separate;
+    text-align: left;
+	}
+
+.MMM-HK-Transport .spacerRow {
+	padding-bottom: 5px;
+	}
+
+.MMM-HK-Transport .destination {
+	font-weight: normal;
+	color: white;
+	}
+	
+.MMM-HK-Transport .line {
+    border-spacing: 10px 0px;
+    border-collapse: separate;
+    text-align: left;
+	color:white;
+	font-weight: normal;
+	width: 50px;
+	}
+	
+.MMM-HK-Transport .departure {
+	padding-left: 10px;
+	text-align: right;
+	font-weight: normal;
+	color: white;
+	}
+	
+.MMM-HK-Transport .noTramRow {
+	font-weight: normal;
+	color: white;
+	}
+	
