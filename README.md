@@ -46,7 +46,7 @@ Sample minimum configuration entry for your `~/MagicMirror/config/config.js`:
         module: 'MMM-HK-Transport',
         position: 'top_left',
         config: {
-			stopID: 'HKStop_KowloonCentralPostOffice_N_3_1',		// Which stop would you like to have displayed?	
+            stopID: 'HKStop_KowloonCentralPostOffice_N_3_1',		// Which stop would you like to have displayed?	
             stopName: '九龍中央郵政局'		
         }
     } 						// If this isn't your last module, add a comma after the bracket
