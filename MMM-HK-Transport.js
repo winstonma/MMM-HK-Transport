@@ -122,17 +122,17 @@ Module.register("MMM-HK-Transport", {
         var labelRow = document.createElement("tr");
 		
         var lineLabel = document.createElement("th");
-		lineLabel.className = "line";
+        lineLabel.className = "line";
         lineLabel.innerHTML = this.translate("LINE");
         labelRow.appendChild(lineLabel);
 
         var destinationLabel = document.createElement("th");
-		destinationLabel.className = "destination";
+        destinationLabel.className = "destination";
         destinationLabel.innerHTML = this.translate("DESTINATION");
         labelRow.appendChild(destinationLabel);
 
         var departureLabel = document.createElement("th");
-		departureLabel.className = "departure";
+        departureLabel.className = "departure";
         departureLabel.innerHTML = this.translate("DEPARTURE");
         labelRow.appendChild(departureLabel);
 		
