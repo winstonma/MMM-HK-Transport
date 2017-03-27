@@ -10,7 +10,7 @@
 Module.register("MMM-HK-Transport", {
 
     defaults: {
-		stopID: 'HKStop_DeXinZhongXueTakSunSecondarySchool',
+		stopID: 'HKStop_KowloonCentralPostOffice_N_3_1',
 		lines: '',
 		direction: '',
 		labelRow: true,
