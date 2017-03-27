@@ -135,8 +135,8 @@ Module.register("MMM-HK-Transport", {
         departureLabel.className = "departure";
         departureLabel.innerHTML = this.translate("DEPARTURE");
         labelRow.appendChild(departureLabel);
-		
-		return labelRow;
+
+        return labelRow;
     },
 
     createSpacerRow: function () {
