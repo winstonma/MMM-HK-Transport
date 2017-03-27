@@ -47,7 +47,7 @@ Sample minimum configuration entry for your `~/MagicMirror/config/config.js`:
         position: 'top_left',
         config: {
             stopID: 'HKStop_KowloonCentralPostOffice_N_3_1',		// Which stop would you like to have displayed?	
-            stopName: '九龍中央郵政局'		
+            stopName: '九龍中央郵政局'	
         }
     } 						// If this isn't your last module, add a comma after the bracket
     
@@ -61,12 +61,10 @@ Sample configuration entry for your `~/MagicMirror/config/config.js` with option
         module: 'MMM-HK-Transport',
         position: 'top_left',
         config: {
-			stopID: '',		// Which stop would you like to have displayed?
-			maxConn: 6,		// How many connections would you like to see? (Maximum: 10)
-			lines: '',		// What lines are you interested in?
-			direction: '',	// If you want to, you can limit the information to one of two directions
-			labelRow: true, // Show or hide column headers
-		    reload: 60000 	// How often should the information be updated? (In milliseconds)
+            stopID: '',		// Which stop would you like to have displayed?
+            stopName: '',   // How would you want the stop name be displayed? 
+            labelRow: true, // Show or hide column headers
+            reload: 60000 	// How often should the information be updated? (In milliseconds)
         }
     } 						// If this isn't your last module, add a comma after the bracket
     
