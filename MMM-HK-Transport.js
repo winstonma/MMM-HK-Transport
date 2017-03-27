@@ -31,7 +31,7 @@ Module.register("MMM-HK-Transport", {
     },
 
     start: function () {
-		var self = this;
+        var self = this;
         Log.info("Starting module: " + this.name);
 
         this.sendSocketNotification("CONFIG", this.config);
@@ -43,24 +43,22 @@ Module.register("MMM-HK-Transport", {
 
 		
     socketNotificationReceived: function (notification, payload) {
-		if (notification === "KMB" + this.config.stopID) {
-			this.kmb_data = payload;
-			this.updateDom();			
+        if (notification === "KMB" + this.config.stopID) {
+            this.kmb_data = payload;
+            this.updateDom();			
 	    }
 	},
 
     getDom: function () {
 					
 		// Auto-create MagicMirror header
-
-		var wrapper = document.createElement("div");
-		var header = document.createElement("header");
+        var wrapper = document.createElement("div");
+        var header = document.createElement("header");
         header.innerHTML = this.config.stopName;
         wrapper.appendChild(header);
-	
-		// Loading data notification
-		
-	    if (!this.kmb_data) {
+
+        // Loading data notification
+        if (!this.kmb_data) {
             var text = document.createElement("div");
             text.innerHTML = this.translate("LOADING");
             text.className = "small dimmed";
