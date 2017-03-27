@@ -61,7 +61,7 @@ Sample configuration entry for your `~/MagicMirror/config/config.js` with option
         module: 'MMM-HK-Transport',
         position: 'top_left',
         config: {
-            stopID: '',		// Which stop would you like to have displayed?
+            stopID: '',     // Which stop would you like to have displayed?
             stopName: '',   // How would you want the stop name be displayed? 
             labelRow: true, // Show or hide column headers
             reload: 60000 	// How often should the information be updated? (In milliseconds)
@@ -79,7 +79,8 @@ Sample configuration entry for your `~/MagicMirror/config/config.js` with option
 ## Config Options
 | **Option** | **Default** | **Description** |
 | :---: | :---: | --- |
-| stopID | HKStop_KowloonCentralPostOffice_N_3_1 | <BR>Which stop would you like to have displayed? <BR><EM> Default: Karlsruhe central station (tram stop)</EM><P> |
+| stopID | HKStop_KowloonCentralPostOffice_N_3_1 | <BR>Which stop would you like to have displayed? <BR><EM> Default: HKStop_KowloonCentralPostOffice_N_3_1</EM><P> |
+| stopName | Stop | <BR>How would you want the stop name be displayed? <BR><EM> Default: Stop</EM><P> |
 | labelRow<BR>`optional` | true | <BR> Show or hide column headers<BR> <EM>Possible values: true, false</EM><P> |
 | reload<BR>`optional`  | 60000 | <BR> How often should the information be updated? (In milliseconds) <BR><EM> Default: Every minute </EM><P> |
 
