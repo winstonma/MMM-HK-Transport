@@ -115,8 +115,8 @@ Module.register("MMM-HK-Transport", {
         }
 
         return wrapper;
-		
-	},
+
+    },
 
     createLabelRow: function () {
         var labelRow = document.createElement("tr");
