@@ -1,16 +1,14 @@
 {
   "name": "MMM-HK_Transport",
   "version": "1.0.0",
-  "description": "MagicMirror² module - station monitor for the Karlsruhe public transport system (KVV)",
+  "description": "MagicMirror² module - Hong Kong Transport station monitor",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/winstonma/MMM-HK-Transport.git"
   },
   "keywords": [
     "MagicMirror",
-    "KVV",
-    "VBK",
-    "Karlsruhe",
+    "HK-Transport",
     "magic mirror",
     "smart mirror",
     "public transport",
