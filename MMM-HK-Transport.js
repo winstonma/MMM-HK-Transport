@@ -4,19 +4,24 @@
  * By Winston / https://github.com/winstonma
  * MIT Licensed.
  * 
- * v1.0.0
+ * v1.1.0
  */
 
 Module.register("MMM-HK-Transport", {
 
     defaults: {
-        stopID: 'HKStop_KowloonCentralPostOffice_N_3_1',
+        stops: [
+            {
+                stopID: 'HKStop_KowloonCentralPostOffice_N_3_1',        // Which stop would you like to have displayed?
+                stopName: 'Kownloon Post Office'
+            }
+        ],
+        stopName: 'MMM-HK-Transport',
         lines: '',
         direction: '',
         labelRow: true,
-        stopName: 'Stop',
         cityMapperURL: 'https://hk-hongkong-api.citymapper.com/2/departures?headways=1&ids=',
-        reload: 1 * 60 * 1000       // every minute
+        reloadInterval: 1 * 60 * 1000       // every minute
     },
 
     getTranslations: function () {
@@ -34,31 +39,35 @@ Module.register("MMM-HK-Transport", {
         var self = this;
         Log.info("Starting module: " + this.name);
 
-        this.sendSocketNotification("CONFIG", this.config);
-        setInterval(
-            function()
-            {self.sendSocketNotification("CONFIG", self.config);}
-            ,this.config.reload);
+        this.registerStops();
+    },
+
+    /* registerStops()
+     * registers the stops to be used by the backend.
+     */
+    registerStops: function() {
+        for (var f in this.config.stops) {
+            var stop = this.config.stops[f];
+            this.sendSocketNotification("ADD_STOP", {
+                stop: stop,
+                config: this.config
+            });
+        }
     },
 
 		
     socketNotificationReceived: function (notification, payload) {
-        if (notification === "KMB" + this.config.stopID) {
-            this.kmb_data = payload;
-            this.updateDom();			
+        if (notification === "STOP_ITEMS") {
+            this.cityMapperData = payload;
+            this.updateDom();	
 	    }
 	},
 
     getDom: function () {
-					
-        // Auto-create MagicMirror header
         var wrapper = document.createElement("div");
-        var header = document.createElement("header");
-        header.innerHTML = this.config.stopName;
-        wrapper.appendChild(header);
 
-        // Loading data notification
-        if (!this.kmb_data) {
+        if (!this.cityMapperData) {
+            wrapper.appendChild(this.createStopHeader(null));
             var text = document.createElement("div");
             text.innerHTML = this.translate("LOADING");
             text.className = "small dimmed";
@@ -66,6 +75,33 @@ Module.register("MMM-HK-Transport", {
             return wrapper;
         }
 
+        for (c in this.cityMapperData) {
+            stop = this.cityMapperData[c];
+            if (stop === null) {
+                continue;
+            }
+            wrapper.appendChild(this.createStopHeader(stop));
+            wrapper.appendChild(this.createStops(stop));
+        }
+        return wrapper;
+    },
+
+    createStopHeader: function(stop) {
+        // Auto-create MagicMirror header
+        var header = document.createElement("header");
+        if (stop == null) {
+            header.innerHTML = this.config.stopName;
+        } else {
+            var targetStop = this.config.stops.find(function findStop(configStop) {
+                return (configStop.stopID == stop.stops[0].id)
+            });
+            header.innerHTML = targetStop.stopName;
+        }
+        
+        return header;
+    },
+
+    createStops: function (stop) {
         // Start creating connections table
         var table = document.createElement("table");
         table.classList.add("small", "table");
@@ -75,9 +111,9 @@ Module.register("MMM-HK-Transport", {
         var counter = 0;
 
         // This loop create the table that display the content
-        for (var f in this.kmb_data.stops){
+        for (var f in stop.stops){
 
-            var tram = this.kmb_data.stops[f];
+            var tram = stop.stops[f];
 
             //if (counter > 0 && this.config.labelRow) {
             if (this.config.labelRow) {
@@ -97,24 +133,7 @@ Module.register("MMM-HK-Transport", {
 
         }
 
-        if (counter == 0) {
-
-            if (!this.hidden) {
-                table.appendChild(this.createNoTramRow());
-                wrapper.appendChild(table);
-                this.hide(10000);
-            }
-
-        } else {
-
-            if (this.hidden) {
-                this.show(5000);
-            }
-
-            wrapper.appendChild(table);
-        }
-
-        return wrapper;
+        return table;
 
     },
 

@@ -1,6 +1,6 @@
 {
   "name": "MMM-HK-Transport",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "MagicMirror² module - Hong Kong Transport station monitor",
   "repository": {
     "type": "git",

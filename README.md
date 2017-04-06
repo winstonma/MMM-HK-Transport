@@ -14,10 +14,10 @@ Lastly, why not join in on our discussions at the official [MagicMirror<sup>2</s
 
 ## Current version
 
-v1.0.0
+v1.1.0
 
 ## Languages
-As of version 1.0.0, MMM-HK-Transport features language support for `Chinese (zh)` and `English (en)` mirrors.
+As of version 1.1.0, MMM-HK-Transport features language support for `Chinese (zh)` and `English (en)` mirrors.
 
 ## Prerequisite
 A working installation of [MagicMirror<sup>2</sup>](https://github.com/MichMich/MagicMirror)
@@ -46,8 +46,12 @@ Sample minimum configuration entry for your `~/MagicMirror/config/config.js`:
         module: 'MMM-HK-Transport',
         position: 'top_left',
         config: {
-            stopID: 'HKStop_KowloonCentralPostOffice_N_3_1',		// Which stop would you like to have displayed?	
-            stopName: '九龍中央郵政局'	
+            stops: [
+                {
+                        stopID: 'HKStop_KowloonCentralPostOffice_N_3_1',        // Which stop would you like to have displayed? 
+                        stopName: '九龍中央郵政局' 
+                }
+            ]
         }
     } 						// If this isn't your last module, add a comma after the bracket
     
@@ -61,10 +65,8 @@ Sample configuration entry for your `~/MagicMirror/config/config.js` with option
         module: 'MMM-HK-Transport',
         position: 'top_left',
         config: {
-            stopID: '',     // Which stop would you like to have displayed?
-            stopName: '',   // How would you want the stop name be displayed? 
             labelRow: true, // Show or hide column headers
-            reload: 60000 	// How often should the information be updated? (In milliseconds)
+            reloadInterval: 60000 	// How often should the information be updated? (In milliseconds)
         }
     } 						// If this isn't your last module, add a comma after the bracket
     
@@ -82,7 +84,7 @@ Sample configuration entry for your `~/MagicMirror/config/config.js` with option
 | stopID | HKStop_KowloonCentralPostOffice_N_3_1 | <BR>Which stop would you like to have displayed? <BR><EM> Default: HKStop_KowloonCentralPostOffice_N_3_1</EM><P> |
 | stopName | Stop | <BR>How would you want the stop name be displayed? <BR><EM> Default: Stop</EM><P> |
 | labelRow<BR>`optional` | true | <BR> Show or hide column headers<BR> <EM>Possible values: true, false</EM><P> |
-| reload<BR>`optional`  | 60000 | <BR> How often should the information be updated? (In milliseconds) <BR><EM> Default: Every minute </EM><P> |
+| reloadInterval<BR>`optional`  | 60000 | <BR> How often should the information be updated? (In milliseconds) <BR><EM> Default: Every minute </EM><P> |
 
 ## Licence
 MIT License
