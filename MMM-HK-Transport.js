@@ -125,10 +125,12 @@ Module.register("MMM-HK-Transport", {
                 var result = tram.departures.filter(function (obj) {
                     return obj.service_id == routeObj.id;
                 });
-                table.appendChild(this.createDataRow(routeObj, result));
-                counter = counter + 1;
+                const rowContent = this.createDataRow(routeObj, result);
+                if (rowContent) {
+                    table.appendChild(rowContent);
+                    counter = counter + 1;
+                }
             }
-
         }
 
         return table;
@@ -218,6 +220,9 @@ Module.register("MMM-HK-Transport", {
                     var midStr = (rangeBottom == rangeTop) ? Math.floor(rangeBottom / 60) : Math.floor(rangeBottom / 60) + "—" + Math.floor(rangeTop / 60);
                     etaArray.push(this.translate("EVERY") + midStr + this.translate("MINUTES"));
                 }
+            }
+            if (etaArray.length == 0) {
+                return null;
             }
             departure.innerHTML = etaArray.toString();
             row.appendChild(departure);
