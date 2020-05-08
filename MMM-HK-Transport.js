@@ -3,8 +3,6 @@
  *
  * By Winston / https://github.com/winstonma
  * MIT Licensed.
- * 
- * v1.1.0
  */
 
 Module.register("MMM-HK-Transport", {

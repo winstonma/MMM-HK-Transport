@@ -1,7 +1,7 @@
 /* Magic Mirror
  * Module: MMM-HK-Transport
  *
- * By Winston Ma
+ * By Winston / https://github.com/winstonma
  * MIT Licensed.
  */
 
