@@ -27,10 +27,13 @@ A working installation of [MagicMirror<sup>2</sup>](https://github.com/MichMich/
   * [request](https://www.npmjs.com/package/request)
 
 ## Installation
-1. Navigate into your MagicMirror's `modules` folder.
-2. Execute `git clone https://github.com/winstonma/MMM-HK-Transport.git`.
-3. Execute `cd MMM-HK-Transport`.
-3. Execute `npm install`.
+Go to MagicMirror folder and execute the following command:
+```
+cd modules
+git clone https://github.com/winstonma/MMM-HK-Transport.git
+cd MMM-HK-Transport
+npm install
+```
 
 ## Module behavior
 Please note that this module auto-creates a module header which displays the name of the chosen Hong Kong local transport stop. It is therefore recommended not to add a 'header' entry to your config.js for this module.<P>
@@ -48,12 +51,12 @@ Sample minimum configuration entry for your `~/MagicMirror/config/config.js`:
         config: {
             stops: [
                 {
-                        stopID: 'HKStop_KowloonCentralPostOffice_N_3_1',        // Which stop would you like to have displayed? 
-                        stopName: '九龍中央郵政局' 
+                    stopID: 'HKStop_KowloonCentralPostOffice_N_3_1',        // Which stop would you like to have displayed? 
+                    stopName: '九龍中央郵政局' 
                 }
             ]
         }
-    } 						// If this isn't your last module, add a comma after the bracket
+    } 				// If this isn't your last module, add a comma after the bracket
     
     ...
 
@@ -74,7 +77,7 @@ Sample configuration entry for your `~/MagicMirror/config/config.js` with option
 
 ## Figuring out the correct stopID
 1. Open your web browser and navigate to the [CityMapper Hong Kong Web Page](https://citymapper.com/hong-kong).
-2. Use the search field to find the Line that the stop will stopped.
+2. Go to `LINES` search box enter the bus line number.
 3. Once you can see the stop in your browser, click the stop.
 4. When a new page is being displayed, check the link (e.g. https://citymapper.com/hong-kong/bus/stops/HKStop_KowloonCentralPostOffice_N_3_1). Note the last portion of the link (e.g. HKStop_KowloonCentralPostOffice_N_3_1)is the `StopID` you are looking for.
 
