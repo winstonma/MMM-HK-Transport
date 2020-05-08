@@ -1,7 +1,7 @@
 /* Magic Mirror
  * Module: MMM-HK-Transport
  *
- * By yo-less
+ * By Winston Ma
  * MIT Licensed.
  */
 
@@ -11,14 +11,14 @@ var NodeHelper = require("node_helper");
 
 module.exports = NodeHelper.create({
 
-    start: function() {
+    start: function () {
         console.log("Starting node helper for: " + this.name);
         this.fetchers = [];
     },
-	
-    socketNotificationReceived: function(notification, payload) {
+
+    socketNotificationReceived: function (notification, payload) {
         // Request for information
-        if(notification === 'ADD_STOP'){
+        if (notification === 'ADD_STOP') {
             this.createFetcher(payload.stop, payload.config);
             return;
         }
@@ -31,7 +31,7 @@ module.exports = NodeHelper.create({
      * attribute feed object - A feed object.
      * attribute config object - A configuration object containing reload interval in milliseconds.
      */
-    createFetcher: function(stopInfo, config) {
+    createFetcher: function (stopInfo, config) {
         var self = this;
 
         var url = config.cityMapperURL + stopInfo.stopID;
@@ -49,11 +49,11 @@ module.exports = NodeHelper.create({
             console.log("Create new CityMapper fetcher for url: " + url + " - Interval: " + reloadInterval);
             fetcher = new Fetcher(url, reloadInterval);
 
-            fetcher.onReceive(function(fetcher) {
+            fetcher.onReceive(function (fetcher) {
                 self.broadcastFeeds();
             });
 
-            fetcher.onError(function(fetcher, error) {
+            fetcher.onError(function (fetcher, error) {
                 self.sendSocketNotification("FETCH_ERROR", {
                     url: fetcher.url(),
                     error: error
@@ -75,7 +75,7 @@ module.exports = NodeHelper.create({
      * Creates an object with all feed items of the different registered feeds,
      * and broadcasts these using sendSocketNotification.
      */
-    broadcastFeeds: function() {
+    broadcastFeeds: function () {
         var feeds = {};
         for (var f in this.fetchers) {
             feeds[f] = this.fetchers[f].items();

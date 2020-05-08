@@ -14,7 +14,7 @@ var request = require("request");
  * attribute reloadInterval number - Reload interval in milliseconds.
  */
 
-var Fetcher = function(url, reloadInterval) {
+var Fetcher = function (url, reloadInterval) {
 	var self = this;
 	if (reloadInterval < 1000) {
 		reloadInterval = 1000;
@@ -23,8 +23,8 @@ var Fetcher = function(url, reloadInterval) {
 	var reloadTimer = null;
 	var items = null;
 
-	var fetchFailedCallback = function() {};
-	var itemsReceivedCallback = function() {};
+	var fetchFailedCallback = function () { };
+	var itemsReceivedCallback = function () { };
 
 	/* private methods */
 
@@ -32,30 +32,30 @@ var Fetcher = function(url, reloadInterval) {
 	 * Request the new items.
 	 */
 
-	var fetchETAs = function() {
+	var fetchETAs = function () {
 		clearTimeout(reloadTimer);
 		reloadTimer = null;
 		items = null;
 
 		request(url, (error, response, body) => {
-	        if (response.statusCode === 200) {
-	        	items = JSON.parse(body);
-	        	self.broadcastItems();
-	        } else {
-	        	fetchFailedCallback(self, error);
-            }
-            scheduleTimer();
-        });
+			if (response.statusCode === 200) {
+				items = JSON.parse(body);
+				self.broadcastItems();
+			} else {
+				fetchFailedCallback(self, error);
+			}
+			scheduleTimer();
+		});
 	};
 
 	/* scheduleTimer()
 	 * Schedule the timer for the next update.
 	 */
 
-	var scheduleTimer = function() {
+	var scheduleTimer = function () {
 		//console.log('Schedule update timer.');
 		clearTimeout(reloadTimer);
-		reloadTimer = setTimeout(function() {
+		reloadTimer = setTimeout(function () {
 			fetchETAs();
 		}, reloadInterval);
 	};
@@ -67,7 +67,7 @@ var Fetcher = function(url, reloadInterval) {
 	 *
 	 * attribute interval number - Interval for the update in milliseconds.
 	 */
-	this.setReloadInterval = function(interval) {
+	this.setReloadInterval = function (interval) {
 		if (interval > 1000 && interval < reloadInterval) {
 			reloadInterval = interval;
 		}
@@ -76,14 +76,14 @@ var Fetcher = function(url, reloadInterval) {
 	/* startFetch()
 	 * Initiate fetchETAs();
 	 */
-	this.startFetch = function() {
+	this.startFetch = function () {
 		fetchETAs();
 	};
 
 	/* broadcastItems()
 	 * Broadcast the existing items.
 	 */
-	this.broadcastItems = function() {
+	this.broadcastItems = function () {
 		if (typeof items === "undefined") {
 			//console.log('No items to broadcast yet.');
 			return;
@@ -92,19 +92,19 @@ var Fetcher = function(url, reloadInterval) {
 		itemsReceivedCallback(self);
 	};
 
-	this.onReceive = function(callback) {
+	this.onReceive = function (callback) {
 		itemsReceivedCallback = callback;
 	};
 
-	this.onError = function(callback) {
+	this.onError = function (callback) {
 		fetchFailedCallback = callback;
 	};
 
-	this.url = function() {
+	this.url = function () {
 		return url;
 	};
 
-	this.items = function() {
+	this.items = function () {
 		return items;
 	};
 };
