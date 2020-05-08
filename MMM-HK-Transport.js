@@ -43,7 +43,7 @@ Module.register("MMM-HK-Transport", {
     /* registerStops()
      * registers the stops to be used by the backend.
      */
-    registerStops: function() {
+    registerStops: function () {
         for (var f in this.config.stops) {
             var stop = this.config.stops[f];
             this.sendSocketNotification("ADD_STOP", {
@@ -53,13 +53,13 @@ Module.register("MMM-HK-Transport", {
         }
     },
 
-		
+
     socketNotificationReceived: function (notification, payload) {
         if (notification === "STOP_ITEMS") {
             this.cityMapperData = payload;
-            this.updateDom();	
-	    }
-	},
+            this.updateDom();
+        }
+    },
 
     getDom: function () {
         var wrapper = document.createElement("div");
@@ -84,7 +84,7 @@ Module.register("MMM-HK-Transport", {
         return wrapper;
     },
 
-    createStopHeader: function(stop) {
+    createStopHeader: function (stop) {
         // Auto-create MagicMirror header
         var header = document.createElement("header");
         if (stop == null) {
@@ -95,7 +95,7 @@ Module.register("MMM-HK-Transport", {
             });
             header.innerHTML = targetStop.stopName;
         }
-        
+
         return header;
     },
 
@@ -103,13 +103,13 @@ Module.register("MMM-HK-Transport", {
         // Start creating connections table
         var table = document.createElement("table");
         table.classList.add("small", "table");
-        table.border='0';
+        table.border = '0';
 
         // Listing selected connections
         var counter = 0;
 
         // This loop create the table that display the content
-        for (var f in stop.stops){
+        for (var f in stop.stops) {
 
             var tram = stop.stops[f];
 
@@ -117,12 +117,12 @@ Module.register("MMM-HK-Transport", {
             if (this.config.labelRow) {
                 table.appendChild(this.createLabelRow());
             }
-                
+
             table.appendChild(this.createSpacerRow());
 
             for (t in tram.services) {
                 var routeObj = tram.services[t];
-                var result = tram.departures.filter(function( obj ) {
+                var result = tram.departures.filter(function (obj) {
                     return obj.service_id == routeObj.id;
                 });
                 table.appendChild(this.createDataRow(routeObj, result));
@@ -137,7 +137,7 @@ Module.register("MMM-HK-Transport", {
 
     createLabelRow: function () {
         var labelRow = document.createElement("tr");
-		
+
         var lineLabel = document.createElement("th");
         lineLabel.className = "line";
         lineLabel.innerHTML = this.translate("LINE");
@@ -163,24 +163,24 @@ Module.register("MMM-HK-Transport", {
         spacerHeader.className = "spacerRow";
         spacerHeader.setAttribute("colSpan", "3");
         spacerHeader.innerHTML = "";
-        spacerRow.appendChild(spacerHeader); 
-      	
+        spacerRow.appendChild(spacerHeader);
+
         return spacerRow;
     },
 
-	
+
     createNoTramRow: function () {
         var noTramRow = document.createElement("tr");
-		
+
         var noTramHeader = document.createElement("th");
         noTramHeader.className = "noTramRow";
         noTramHeader.setAttribute("colSpan", "3");
         noTramHeader.innerHTML = this.translate("NO-TRAMS");
-        noTramRow.appendChild(noTramHeader); 
-      	
+        noTramRow.appendChild(noTramHeader);
+
         return noTramRow;
     },
-	
+
     createDataRow: function (routeObj, result) {
         var row = document.createElement("tr");
 
@@ -191,7 +191,13 @@ Module.register("MMM-HK-Transport", {
 
         var destination = document.createElement("td");
         destination.className = "destination";
-        destination.innerHTML = routeObj.headsign.split(" ")[0];
+        const REGEX_CHINESE = /[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\u{20000}-\u{2a6df}]|[\u{2a700}-\u{2b73f}]|[\u{2b740}-\u{2b81f}]|[\u{2b820}-\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\u{2f800}-\u{2fa1f}]/u;
+        const hasChinese = REGEX_CHINESE.test(routeObj.headsign);
+        if (hasChinese) {
+            destination.innerHTML = routeObj.headsign.split(" ")[0];
+        } else {
+            destination.innerHTML = routeObj.headsign;
+        }
         row.appendChild(destination);
 
         if (result.length > 0) {
@@ -209,7 +215,7 @@ Module.register("MMM-HK-Transport", {
                     }
                 } else if (etaObj.wait_headway_seconds_range) {
                     var [rangeBottom, rangeTop] = etaObj.wait_headway_seconds_range;
-                    var midStr = (rangeBottom == rangeTop)? Math.floor(rangeBottom/60): Math.floor(rangeBottom/60) + "—" + Math.floor(rangeTop/60);
+                    var midStr = (rangeBottom == rangeTop) ? Math.floor(rangeBottom / 60) : Math.floor(rangeBottom / 60) + "—" + Math.floor(rangeTop / 60);
                     etaArray.push(this.translate("EVERY") + midStr + this.translate("MINUTES"));
                 }
             }
