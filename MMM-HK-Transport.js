@@ -24,8 +24,8 @@ Module.register("MMM-HK-Transport", {
 
     getTranslations: function () {
         return {
-            en: "translations/en.json",
-            zh: "translations/zh.json"
+            "en": "translations/en.json",
+            "zh-tw": "translations/zh.json"
         };
     },
 
