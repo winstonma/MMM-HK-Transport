@@ -18,7 +18,7 @@ Module.register("MMM-HK-Transport", {
         lines: '',
         direction: '',
         labelRow: true,
-        cityMapperURL: 'https://hk-hongkong-api.citymapper.com/2/departures?headways=1&ids=',
+        cityMapperURL: 'https://citymapper.com/api/1/departures?headways=1&region_id=hk-hongkong&ids=',
         reloadInterval: 1 * 60 * 1000       // every minute
     },
 
@@ -37,6 +37,8 @@ Module.register("MMM-HK-Transport", {
         var self = this;
         Log.info("Starting module: " + this.name);
 
+        this.cityMapperData = {};
+
         this.registerStops();
     },
 
@@ -53,7 +55,6 @@ Module.register("MMM-HK-Transport", {
         }
     },
 
-
     socketNotificationReceived: function (notification, payload) {
         if (notification === "STOP_ITEMS") {
             this.cityMapperData = payload;
@@ -64,7 +65,7 @@ Module.register("MMM-HK-Transport", {
     getDom: function () {
         var wrapper = document.createElement("div");
 
-        if (!this.cityMapperData) {
+        if (Object.keys(this.cityMapperData).length === 0) {
             wrapper.appendChild(this.createStopHeader(null));
             var text = document.createElement("div");
             text.innerHTML = this.translate("LOADING");
@@ -73,14 +74,11 @@ Module.register("MMM-HK-Transport", {
             return wrapper;
         }
 
-        for (c in this.cityMapperData) {
-            stop = this.cityMapperData[c];
-            if (stop === null) {
-                continue;
-            }
-            wrapper.appendChild(this.createStopHeader(stop));
-            wrapper.appendChild(this.createStops(stop));
-        }
+        Object.values(this.cityMapperData).forEach(stop => {
+            wrapper.appendChild(this.createStopHeader(stop.stops[0]));
+            wrapper.appendChild(this.createStops(stop.stops[0]));
+        });
+
         return wrapper;
     },
 
@@ -90,10 +88,7 @@ Module.register("MMM-HK-Transport", {
         if (stop == null) {
             header.innerHTML = this.config.stopName;
         } else {
-            var targetStop = this.config.stops.find(function findStop(configStop) {
-                return (configStop.stopID == stop.stops[0].id)
-            });
-            header.innerHTML = targetStop.stopName;
+            header.innerHTML = stop.name;
         }
 
         return header;
@@ -105,33 +100,26 @@ Module.register("MMM-HK-Transport", {
         table.classList.add("small", "table");
         table.border = '0';
 
-        // Listing selected connections
-        var counter = 0;
+        if (this.config.labelRow) {
+            table.appendChild(this.createLabelRow());
+        }
+
+        table.appendChild(this.createSpacerRow());
+
+        const stopInfo = stop.routes.map(route => {
+            const service = stop.services.find(element => element.route_id == route.id);
+            return {
+                route: route,
+                service: service
+            }
+        });
 
         // This loop create the table that display the content
-        for (var f in stop.stops) {
-
-            var tram = stop.stops[f];
-
-            //if (counter > 0 && this.config.labelRow) {
-            if (this.config.labelRow) {
-                table.appendChild(this.createLabelRow());
-            }
-
-            table.appendChild(this.createSpacerRow());
-
-            for (t in tram.services) {
-                var routeObj = tram.services[t];
-                var result = tram.departures.filter(function (obj) {
-                    return obj.service_id == routeObj.id;
-                });
-                const rowContent = this.createDataRow(routeObj, result);
-                if (rowContent) {
-                    table.appendChild(rowContent);
-                    counter = counter + 1;
-                }
-            }
-        }
+        stopInfo.forEach(element => {
+            const rowContent = this.createDataRow(element);
+            if (rowContent)
+                table.appendChild(rowContent);
+        });
 
         return table;
 
@@ -183,18 +171,21 @@ Module.register("MMM-HK-Transport", {
         return noTramRow;
     },
 
-    createDataRow: function (routeObj, result) {
+    createDataRow: function (routeObj) {
+        if (typeof routeObj.service.next_departures === 'undefined' && typeof routeObj.service.headway_seconds_range === 'undefined')
+            return null;
+
         var row = document.createElement("tr");
 
         var line = document.createElement("td");
         line.className = "line";
-        line.innerHTML = routeObj.display_name;
+        line.innerHTML = routeObj.route.name;
         row.appendChild(line);
 
         var destination = document.createElement("td");
         destination.className = "destination";
         const REGEX_CHINESE = /[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\u{20000}-\u{2a6df}]|[\u{2a700}-\u{2b73f}]|[\u{2b740}-\u{2b81f}]|[\u{2b820}-\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\u{2f800}-\u{2fa1f}]/u;
-        const splitStr = routeObj.headsign.split(' ')
+        const splitStr = routeObj.service.headsign.split(' ')
         const chiWords = splitStr.filter((string) => REGEX_CHINESE.test(string))
         const engWords = splitStr.filter((string) => !REGEX_CHINESE.test(string))
 
@@ -205,31 +196,20 @@ Module.register("MMM-HK-Transport", {
         }
         row.appendChild(destination);
 
-        if (result.length > 0) {
-            var departure = document.createElement("td");
-            departure.className = "departure";
-            etaArray = [];
-            for (r in result) {
-                var etaObj = result[r];
-                if (etaObj.wait_time_seconds) {
-                    etaArray.push(moment().add(etaObj.wait_time_seconds, 'seconds').format('h:mm'));
-                } else if (etaObj.wait_scheduled_time) {
-                    timeObj = moment(etaObj.wait_scheduled_time);
-                    if (timeObj.diff(moment(), 'hour') < 1) {
-                        etaArray.push(timeObj.format('h:mm'));
-                    }
-                } else if (etaObj.wait_headway_seconds_range) {
-                    var [rangeBottom, rangeTop] = etaObj.wait_headway_seconds_range;
-                    var midStr = (rangeBottom == rangeTop) ? Math.floor(rangeBottom / 60) : Math.floor(rangeBottom / 60) + "—" + Math.floor(rangeTop / 60);
-                    etaArray.push(this.translate("EVERY") + midStr + this.translate("MINUTES"));
-                }
-            }
-            if (etaArray.length == 0) {
-                return null;
-            }
-            departure.innerHTML = etaArray.toString();
-            row.appendChild(departure);
+        var departure = document.createElement("td");
+        departure.className = "departure";
+        let etaArray;
+
+        if (routeObj.service.next_departures) {
+            etaArray = routeObj.service.next_departures.map(etaStr => moment(etaStr).format('h:mm'));
+        } else if (routeObj.service.headway_seconds_range) {
+            const [rangeBottom, rangeTop] = routeObj.service.headway_seconds_range;
+            const midStr = (rangeBottom == rangeTop) ? Math.floor(rangeBottom / 60) : Math.floor(rangeBottom / 60) + "—" + Math.floor(rangeTop / 60);
+            etaArray = this.translate("EVERY") + midStr + this.translate("MINUTES");
         }
+        departure.innerHTML = etaArray.toString();
+        row.appendChild(departure);
+
         return row;
     }
 
