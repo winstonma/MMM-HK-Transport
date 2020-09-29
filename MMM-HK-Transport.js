@@ -10,8 +10,7 @@ Module.register("MMM-HK-Transport", {
     defaults: {
         stops: [
             {
-                stopID: 'HKStop_KowloonCentralPostOffice_N_3_1',        // Which stop would you like to have displayed?
-                stopName: 'Kownloon Post Office'
+                stopID: 'HKStop_KowloonCentralPostOffice_N_1'
             }
         ],
         stopName: 'MMM-HK-Transport',
