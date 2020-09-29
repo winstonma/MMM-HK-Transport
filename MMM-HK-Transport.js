@@ -171,7 +171,7 @@ Module.register("MMM-HK-Transport", {
     },
 
     createDataRow: function (routeObj) {
-        if (typeof routeObj.service.next_departures === 'undefined' && typeof routeObj.service.headway_seconds_range === 'undefined')
+        if (typeof routeObj.service.next_departures === 'undefined' && typeof routeObj.service.headway_seconds_range === 'undefined' && typeof routeObj.service.live_departures_seconds === 'undefined')
             return null;
 
         var row = document.createElement("tr");
@@ -205,6 +205,8 @@ Module.register("MMM-HK-Transport", {
             const [rangeBottom, rangeTop] = routeObj.service.headway_seconds_range;
             const midStr = (rangeBottom == rangeTop) ? Math.floor(rangeBottom / 60) : Math.floor(rangeBottom / 60) + "—" + Math.floor(rangeTop / 60);
             etaArray = this.translate("EVERY") + midStr + this.translate("MINUTES");
+        } else if (routeObj.service.live_departures_seconds) {
+            etaArray = routeObj.service.live_departures_seconds.map(seconds => moment().add(seconds, 'seconds').format('h:mm'));
         }
         departure.innerHTML = etaArray.toString();
         row.appendChild(departure);
