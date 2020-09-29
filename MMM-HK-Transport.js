@@ -204,11 +204,11 @@ Module.register("MMM-HK-Transport", {
         if (routeObj.service.next_departures) {
             etaArray = routeObj.service.next_departures.map(etaStr => moment(etaStr).format('h:mm'));
         } else if (routeObj.service.headway_seconds_range) {
-            const [rangeBottom, rangeTop] = routeObj.service.headway_seconds_range;
-            const midStr = (rangeBottom == rangeTop) ? Math.floor(rangeBottom / 60) : Math.floor(rangeBottom / 60) + "—" + Math.floor(rangeTop / 60);
+            const [rangeBottom, rangeTop] = routeObj.service.headway_seconds_range.map(seconds =>  Math.floor(seconds / 60));
+            const midStr = (rangeBottom == rangeTop) ? rangeBottom : rangeBottom + "—" + rangeTop;
             etaArray = this.translate("EVERY") + midStr + this.translate("MINUTES");
         } else if (routeObj.service.live_departures_seconds) {
-            etaArray = routeObj.service.live_departures_seconds.map(seconds => moment().add(seconds, 'seconds').format('h:mm'));
+            etaArray = routeObj.service.live_departures_seconds.map(seconds => moment().seconds(seconds).format('h:mm'));
         }
         departure.innerHTML = etaArray.toString();
         row.appendChild(departure);
