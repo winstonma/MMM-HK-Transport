@@ -171,7 +171,9 @@ Module.register("MMM-HK-Transport", {
     },
 
     createDataRow: function (routeObj) {
-        if ("next_departures" in routeObj.service && "headway_seconds_range" in routeObj.service && "live_departures_seconds" in routeObj.service)
+        if (Object.keys(routeObj.service)
+            .filter(key => ["next_departures", "headway_seconds_range", "live_departures_seconds"].includes(key))
+            .length == 0)
             return null;
 
         var row = document.createElement("tr");
