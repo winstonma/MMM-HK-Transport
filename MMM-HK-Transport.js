@@ -171,7 +171,7 @@ Module.register("MMM-HK-Transport", {
     },
 
     createDataRow: function (routeObj) {
-        if (typeof routeObj.service.next_departures === 'undefined' && typeof routeObj.service.headway_seconds_range === 'undefined' && typeof routeObj.service.live_departures_seconds === 'undefined')
+        if ("next_departures" in routeObj.service && "headway_seconds_range" in routeObj.service && "live_departures_seconds" in routeObj.service)
             return null;
 
         var row = document.createElement("tr");
