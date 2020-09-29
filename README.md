@@ -51,8 +51,7 @@ Sample minimum configuration entry for your `~/MagicMirror/config/config.js`:
         config: {
             stops: [
                 {
-                    stopID: 'HKStop_KowloonCentralPostOffice_N_3_1',        // Which stop would you like to have displayed? 
-                    stopName: '九龍中央郵政局' 
+                    stopID: 'HKStop_KowloonCentralPostOffice_N_1'
                 }
             ]
         }
@@ -79,13 +78,12 @@ Sample configuration entry for your `~/MagicMirror/config/config.js` with option
 1. Open your web browser and navigate to the [CityMapper Hong Kong Web Page](https://citymapper.com/hong-kong).
 2. Go to `LINES` search box enter the bus line number.
 3. Once you can see the stop in your browser, click the stop.
-4. When a new page is being displayed, check the link (e.g. https://citymapper.com/hong-kong/bus/stops/HKStop_KowloonCentralPostOffice_N_3_1). Note the last portion of the link (e.g. HKStop_KowloonCentralPostOffice_N_3_1)is the `StopID` you are looking for.
+4. When a new page is being displayed, check the link (e.g. https://citymapper.com/hong-kong/bus/stops/HKStop_KowloonCentralPostOffice_N_1). Note the last portion of the link (e.g. `HKStop_KowloonCentralPostOffice_N_1`)is the `StopID` you are looking for.
 
 ## Config Options
 | **Option** | **Default** | **Description** |
 | :---: | :---: | --- |
-| stopID | HKStop_KowloonCentralPostOffice_N_3_1 | <BR>Which stop would you like to have displayed? <BR><EM> Default: HKStop_KowloonCentralPostOffice_N_3_1</EM><P> |
-| stopName | Stop | <BR>How would you want the stop name be displayed? <BR><EM> Default: Stop</EM><P> |
+| stopID | HKStop_KowloonCentralPostOffice_N_1 | <BR>Which stop would you like to have displayed? <BR><EM> Default: HKStop_KowloonCentralPostOffice_N_1</EM><P> |
 | labelRow<BR>`optional` | true | <BR> Show or hide column headers<BR> <EM>Possible values: true, false</EM><P> |
 | reloadInterval<BR>`optional`  | 60000 | <BR> How often should the information be updated? (In milliseconds) <BR><EM> Default: Every minute </EM><P> |
 
