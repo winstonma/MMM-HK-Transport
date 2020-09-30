@@ -29,6 +29,7 @@ Module.register("MMM-HK-Transport", {
     getTranslations: function () {
         return {
             "en": "translations/en.json",
+            "zh-hk": "translations/zh.json",
             "zh-tw": "translations/zh.json"
         };
     },
