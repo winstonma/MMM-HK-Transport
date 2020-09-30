@@ -76,10 +76,12 @@ module.exports = NodeHelper.create({
      * and broadcasts these using sendSocketNotification.
      */
     broadcastFeeds: function () {
-        var feeds = {};
-        for (var f in this.fetchers) {
-            feeds[f] = this.fetchers[f].items();
-        }
+        const self = this;
+
+        const feeds = Object.entries(self.fetchers)
+            .map(([key, fetcher]) => [key, fetcher.items()])
+            .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+
         this.sendSocketNotification("STOP_ITEMS", feeds);
     },
 });

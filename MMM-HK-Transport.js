@@ -51,13 +51,12 @@ Module.register("MMM-HK-Transport", {
      * registers the stops to be used by the backend.
      */
     registerStops: function () {
-        for (var f in this.config.stops) {
-            var stop = this.config.stops[f];
+        this.config.stops.forEach(stop => {
             this.sendSocketNotification("ADD_STOP", {
                 stop: stop,
                 config: this.config
             });
-        }
+        });
     },
 
     socketNotificationReceived: function (notification, payload) {
