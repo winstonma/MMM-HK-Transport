@@ -21,6 +21,11 @@ Module.register("MMM-HK-Transport", {
         reloadInterval: 1 * 60 * 1000       // every minute
     },
 
+    // Define required scripts.
+    getScripts: function () {
+        return ["moment.js"];
+    },
+
     getTranslations: function () {
         return {
             "en": "translations/en.json",
@@ -204,7 +209,7 @@ Module.register("MMM-HK-Transport", {
         if (routeObj.service.next_departures) {
             etaArray = routeObj.service.next_departures.map(etaStr => moment(etaStr).format('h:mm'));
         } else if (routeObj.service.headway_seconds_range) {
-            const [rangeBottom, rangeTop] = routeObj.service.headway_seconds_range.map(seconds =>  Math.floor(seconds / 60));
+            const [rangeBottom, rangeTop] = routeObj.service.headway_seconds_range.map(seconds => Math.floor(seconds / 60));
             const midStr = (rangeBottom == rangeTop) ? rangeBottom : `${rangeBottom}—${rangeTop}`;
             etaArray = this.translate("EVERY") + midStr + this.translate("MINUTES");
         } else if (routeObj.service.live_departures_seconds) {
