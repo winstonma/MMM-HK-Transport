@@ -177,9 +177,23 @@ Module.register("MMM-HK-Transport", {
     },
 
     createDataRow: function (routeObj) {
-        if (Object.keys(routeObj.service)
-            .filter(key => ["next_departures", "headway_seconds_range", "live_departures_seconds"].includes(key))
-            .length == 0)
+        let etaArray;
+
+        if (routeObj.service.next_departures) {
+            const hoursFromNow = moment.duration(moment(routeObj.service.next_departures[0]).diff(moment()))
+                .asHours();
+            if (hoursFromNow < 1) {
+                etaArray = routeObj.service.next_departures.map(etaStr => moment(etaStr).format('h:mm'));
+            }
+        } else if (routeObj.service.headway_seconds_range) {
+            const [rangeBottom, rangeTop] = routeObj.service.headway_seconds_range.map(seconds => Math.floor(seconds / 60));
+            const midStr = (rangeBottom == rangeTop) ? rangeBottom : `${rangeBottom}—${rangeTop}`;
+            etaArray = this.translate("EVERY") + midStr + this.translate("MINUTES");
+        } else if (routeObj.service.live_departures_seconds) {
+            etaArray = routeObj.service.live_departures_seconds.map(seconds => moment().seconds(seconds).format('h:mm'));
+        }
+
+        if (!etaArray)
             return null;
 
         var row = document.createElement("tr");
@@ -205,17 +219,6 @@ Module.register("MMM-HK-Transport", {
 
         var departure = document.createElement("td");
         departure.className = "departure";
-        let etaArray;
-
-        if (routeObj.service.next_departures) {
-            etaArray = routeObj.service.next_departures.map(etaStr => moment(etaStr).format('h:mm'));
-        } else if (routeObj.service.headway_seconds_range) {
-            const [rangeBottom, rangeTop] = routeObj.service.headway_seconds_range.map(seconds => Math.floor(seconds / 60));
-            const midStr = (rangeBottom == rangeTop) ? rangeBottom : `${rangeBottom}—${rangeTop}`;
-            etaArray = this.translate("EVERY") + midStr + this.translate("MINUTES");
-        } else if (routeObj.service.live_departures_seconds) {
-            etaArray = routeObj.service.live_departures_seconds.map(seconds => moment().seconds(seconds).format('h:mm'));
-        }
         departure.innerHTML = etaArray.toString();
         row.appendChild(departure);
 
