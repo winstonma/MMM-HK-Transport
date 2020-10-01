@@ -14,6 +14,7 @@ Module.register("MMM-HK-Transport", {
             }
         ],
         stopName: 'MMM-HK-Transport',
+        timeFormat: (config.timeFormat !== 24) ? "h:mm" : "HH:mm",
         lines: '',
         direction: '',
         labelRow: true,
@@ -182,14 +183,14 @@ Module.register("MMM-HK-Transport", {
             const hoursFromNow = moment.duration(moment(routeObj.service.next_departures[0]).diff(moment()))
                 .asHours();
             if (hoursFromNow < 1) {
-                etaArray = routeObj.service.next_departures.map(etaStr => moment(etaStr).format('h:mm'));
+                etaArray = routeObj.service.next_departures.map(etaStr => moment(etaStr).format(this.config.timeFormat));
             }
         } else if (routeObj.service.headway_seconds_range) {
             const [rangeBottom, rangeTop] = routeObj.service.headway_seconds_range.map(seconds => Math.floor(seconds / 60));
             const midStr = (rangeBottom == rangeTop) ? rangeBottom : `${rangeBottom}—${rangeTop}`;
             etaArray = this.translate("EVERY") + midStr + this.translate("MINUTES");
         } else if (routeObj.service.live_departures_seconds) {
-            etaArray = routeObj.service.live_departures_seconds.map(seconds => moment().seconds(seconds).format('h:mm'));
+            etaArray = routeObj.service.live_departures_seconds.map(seconds => moment().seconds(seconds).format(this.config.timeFormat));
         }
 
         if (!etaArray)
