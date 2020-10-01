@@ -87,13 +87,30 @@ Module.register("MMM-HK-Transport", {
         return wrapper;
     },
 
+    getDisplayString: function (input) {
+        const langTable = {
+            'zh-tw': 'zh',
+            'zh-hk': 'zh',
+            'zh-cn': 'zh'
+        }
+
+        const REGEX_CHINESE = /[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\u{20000}-\u{2a6df}]|[\u{2a700}-\u{2b73f}]|[\u{2b740}-\u{2b81f}]|[\u{2b820}-\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\u{2f800}-\u{2fa1f}]/u;
+        const splitStr = input.split(' ')
+        const chiWords = splitStr.filter((string) => REGEX_CHINESE.test(string))
+        const engWords = splitStr.filter((string) => !REGEX_CHINESE.test(string))
+
+        if (langTable[config.language])
+            return chiWords;
+        return engWords;
+    },
+
     createStopHeader: function (stop) {
         // Auto-create MagicMirror header
         var header = document.createElement("header");
         if (stop == null) {
             header.innerHTML = this.config.stopName;
         } else {
-            header.innerHTML = stop.name;
+            header.innerHTML = this.getDisplayString(stop.name);
         }
 
         return header;
@@ -163,7 +180,6 @@ Module.register("MMM-HK-Transport", {
         return spacerRow;
     },
 
-
     createNoTramRow: function () {
         var noTramRow = document.createElement("tr");
 
@@ -205,16 +221,7 @@ Module.register("MMM-HK-Transport", {
 
         var destination = document.createElement("td");
         destination.className = "destination";
-        const REGEX_CHINESE = /[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\u{20000}-\u{2a6df}]|[\u{2a700}-\u{2b73f}]|[\u{2b740}-\u{2b81f}]|[\u{2b820}-\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\u{2f800}-\u{2fa1f}]/u;
-        const splitStr = routeObj.service.headsign.split(' ')
-        const chiWords = splitStr.filter((string) => REGEX_CHINESE.test(string))
-        const engWords = splitStr.filter((string) => !REGEX_CHINESE.test(string))
-
-        if (chiWords.length > 0) {
-            destination.innerHTML = chiWords.join(' ');
-        } else {
-            destination.innerHTML = engWords.join(' ');
-        }
+        destination.innerHTML = this.getDisplayString(routeObj.service.headsign);
         row.appendChild(destination);
 
         var departure = document.createElement("td");
