@@ -9,15 +9,16 @@ Lastly, why not join in on our discussions at the official [MagicMirror<sup>2</s
 
 ## Screenshots
 
-![Chinese version](screenshots/screenshot_zh.png)
-![English version](screenshots/screenshot_en.png)
+`en`             |  `zh-tw` or `zh-hk`
+:-------------------------:|:-------------------------:
+![English version](screenshots/screenshot_en.png)  |  ![Chinese version](screenshots/screenshot_zh.png) |
 
 ## Current version
 
-v1.1.0
+v1.3.0
 
 ## Languages
-As of version 1.1.0, MMM-HK-Transport features language support for `Chinese (zh)` and `English (en)` mirrors.
+As of version 1.3.0, MMM-HK-Transport features language support for `Chinese (zh-hk and zh-tw)` and `English (en)` mirrors.
 
 ## Prerequisite
 A working installation of [MagicMirror<sup>2</sup>](https://github.com/MichMich/MagicMirror)
