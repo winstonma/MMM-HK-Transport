@@ -24,7 +24,7 @@ A working installation of [MagicMirror<sup>2</sup>](https://github.com/MichMich/
  
 ## Dependencies
   * npm
-  * [request](https://www.npmjs.com/package/request)
+  * [got](https://github.com/sindresorhus/got)
 
 ## Installation
 Go to MagicMirror folder and execute the following command:
