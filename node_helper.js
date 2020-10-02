@@ -5,9 +5,10 @@
  * MIT Licensed.
  */
 
-var validUrl = require("valid-url");
-var Fetcher = require("./fetcher.js");
-var NodeHelper = require("node_helper");
+const validUrl = require("valid-url");
+const Fetcher = require("./fetcher.js");
+const NodeHelper = require("node_helper");
+const got = require('got');
 
 module.exports = NodeHelper.create({
 
@@ -19,9 +20,32 @@ module.exports = NodeHelper.create({
     socketNotificationReceived: function (notification, payload) {
         // Request for information
         if (notification === 'ADD_STOP') {
-            this.createFetcher(payload.stop, payload.config);
+            this.getStopInfo(payload.stop, payload.config);
             return;
         }
+    },
+
+    /* getStopInfo(stopInfo, config)
+     * Obtain the stop id from the URL
+     *
+     * attribute stopInfo object - A stopInfo object.
+     * attribute config object - A configuration object containing reload interval in milliseconds.
+     */
+    getStopInfo: function (stopInfo, config) {
+        const self = this;
+        const baseURL = "https://citymapper.com/api/3/stopinfo?region_id=hk-hongkong&ids=";
+
+        const url = baseURL + stopInfo.stopID;
+        (async () => {
+            try {
+                const response = await got(url, {
+                    responseType: 'json'
+                });
+                this.createFetcher(response.body.stops[0].id, config);
+            } catch (error) {
+                console.log(error.response.body);
+            }
+        })();
     },
 
     /* createFetcher(feed, config)
@@ -31,10 +55,10 @@ module.exports = NodeHelper.create({
      * attribute feed object - A feed object.
      * attribute config object - A configuration object containing reload interval in milliseconds.
      */
-    createFetcher: function (stopInfo, config) {
+    createFetcher: function (stopID, config) {
         var self = this;
 
-        var url = config.cityMapperURL + stopInfo.stopID;
+        var url = config.cityMapperURL + stopID;
         var url = url || "";
         var reloadInterval = config.reloadInterval || 5 * 60 * 1000;
 
@@ -45,7 +69,7 @@ module.exports = NodeHelper.create({
         }
 
         var fetcher;
-        if (typeof self.fetchers[stopInfo.stopID] === "undefined") {
+        if (typeof self.fetchers[stopID] === "undefined") {
             console.log("Create new CityMapper fetcher for url: " + url + " - Interval: " + reloadInterval);
             fetcher = new Fetcher(url, reloadInterval);
 
@@ -60,10 +84,10 @@ module.exports = NodeHelper.create({
                 });
             });
 
-            self.fetchers[stopInfo.stopID] = fetcher;
+            self.fetchers[stopID] = fetcher;
         } else {
             console.log("Use existing CityMapper fetcher for url: " + url);
-            fetcher = self.fetchers[stopInfo.stopID];
+            fetcher = self.fetchers[stopID];
             fetcher.setReloadInterval(reloadInterval);
             fetcher.broadcastItems();
         }
