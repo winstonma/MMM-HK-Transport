@@ -5,7 +5,7 @@
  * MIT Licensed.
  */
 
-var request = require("request");
+const got = require('got');
 
 /* Fetcher
  * Responsible for requesting an update on the set interval and broadcasting the data.
@@ -15,98 +15,102 @@ var request = require("request");
  */
 
 var Fetcher = function (url, reloadInterval) {
-	var self = this;
-	if (reloadInterval < 1000) {
-		reloadInterval = 1000;
-	}
+    var self = this;
+    if (reloadInterval < 1000) {
+        reloadInterval = 1000;
+    }
 
-	var reloadTimer = null;
-	var items = null;
+    var reloadTimer = null;
+    var items = null;
 
-	var fetchFailedCallback = function () { };
-	var itemsReceivedCallback = function () { };
+    var fetchFailedCallback = function () { };
+    var itemsReceivedCallback = function () { };
 
-	/* private methods */
+    /* private methods */
 
-	/* fetchETAs()
-	 * Request the new items.
-	 */
+    /* fetchETAs()
+     * Request the new items.
+     */
 
-	var fetchETAs = function () {
-		clearTimeout(reloadTimer);
-		reloadTimer = null;
-		items = null;
+    var fetchETAs = function () {
+        clearTimeout(reloadTimer);
+        reloadTimer = null;
+        items = null;
 
-		request(url, (error, response, body) => {
-			if (response.statusCode === 200) {
-				items = JSON.parse(body);
-				self.broadcastItems();
-			} else {
-				fetchFailedCallback(self, error);
-			}
-			scheduleTimer();
-		});
-	};
+        (async () => {
+            try {
+                const response = await got(url, {
+                    responseType: 'json'
+                });
+                items = response.body;
+                self.broadcastItems();
+            } catch (error) {
+                console.log(error.response.body);
+                fetchFailedCallback(self, error);
+                scheduleTimer();
+            }
+        })();
+    };
 
-	/* scheduleTimer()
-	 * Schedule the timer for the next update.
-	 */
+    /* scheduleTimer()
+     * Schedule the timer for the next update.
+     */
 
-	var scheduleTimer = function () {
-		//console.log('Schedule update timer.');
-		clearTimeout(reloadTimer);
-		reloadTimer = setTimeout(function () {
-			fetchETAs();
-		}, reloadInterval);
-	};
+    var scheduleTimer = function () {
+        //console.log('Schedule update timer.');
+        clearTimeout(reloadTimer);
+        reloadTimer = setTimeout(function () {
+            fetchETAs();
+        }, reloadInterval);
+    };
 
-	/* public methods */
+    /* public methods */
 
-	/* setReloadInterval()
-	 * Update the reload interval, but only if we need to increase the speed.
-	 *
-	 * attribute interval number - Interval for the update in milliseconds.
-	 */
-	this.setReloadInterval = function (interval) {
-		if (interval > 1000 && interval < reloadInterval) {
-			reloadInterval = interval;
-		}
-	};
+    /* setReloadInterval()
+     * Update the reload interval, but only if we need to increase the speed.
+     *
+     * attribute interval number - Interval for the update in milliseconds.
+     */
+    this.setReloadInterval = function (interval) {
+        if (interval > 1000 && interval < reloadInterval) {
+            reloadInterval = interval;
+        }
+    };
 
-	/* startFetch()
-	 * Initiate fetchETAs();
-	 */
-	this.startFetch = function () {
-		fetchETAs();
-	};
+    /* startFetch()
+     * Initiate fetchETAs();
+     */
+    this.startFetch = function () {
+        fetchETAs();
+    };
 
-	/* broadcastItems()
-	 * Broadcast the existing items.
-	 */
-	this.broadcastItems = function () {
-		if (typeof items === "undefined") {
-			//console.log('No items to broadcast yet.');
-			return;
-		}
-		//console.log('Broadcasting ' + items.length + ' items.');
-		itemsReceivedCallback(self);
-	};
+    /* broadcastItems()
+     * Broadcast the existing items.
+     */
+    this.broadcastItems = function () {
+        if (typeof items === "undefined") {
+            //console.log('No items to broadcast yet.');
+            return;
+        }
+        //console.log('Broadcasting ' + items.length + ' items.');
+        itemsReceivedCallback(self);
+    };
 
-	this.onReceive = function (callback) {
-		itemsReceivedCallback = callback;
-	};
+    this.onReceive = function (callback) {
+        itemsReceivedCallback = callback;
+    };
 
-	this.onError = function (callback) {
-		fetchFailedCallback = callback;
-	};
+    this.onError = function (callback) {
+        fetchFailedCallback = callback;
+    };
 
-	this.url = function () {
-		return url;
-	};
+    this.url = function () {
+        return url;
+    };
 
-	this.items = function () {
-		return items;
-	};
+    this.items = function () {
+        return items;
+    };
 };
 
 module.exports = Fetcher;
