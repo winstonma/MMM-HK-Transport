@@ -128,8 +128,8 @@ Module.register("MMM-HK-Transport", {
 
         table.appendChild(this.createSpacerRow());
 
-        const stopInfo = stop.routes.map(route => {
-            const service = stop.services.find(element => element.route_id == route.id);
+        const stopInfo = stop.services.map(service => {
+            const route = stop.routes.find(element => element.id == service.route_id);
             return {
                 route: route,
                 service: service
