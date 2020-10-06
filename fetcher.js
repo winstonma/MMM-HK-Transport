@@ -44,6 +44,7 @@ var Fetcher = function (url, reloadInterval) {
                 });
                 items = response.body;
                 self.broadcastItems();
+                scheduleTimer();
             } catch (error) {
                 console.log(error.response.body);
                 fetchFailedCallback(self, error);
