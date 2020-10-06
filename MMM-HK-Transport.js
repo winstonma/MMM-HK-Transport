@@ -36,7 +36,7 @@ Module.register("MMM-HK-Transport", {
     },
 
     getStyles: function () {
-        return ["MMM-HK-Transport.css"];
+        return ["MMM-HK-Transport.css", "font-awesome.css"];
     },
 
     start: function () {
@@ -217,6 +217,8 @@ Module.register("MMM-HK-Transport", {
         var line = document.createElement("td");
         line.className = "line";
         line.innerHTML = routeObj.route.name;
+        if (routeObj.route.brand === "GMBBus")
+            line.innerHTML += '<sup><i class="fas fa-shuttle-van"></i></sup>';
         row.appendChild(line);
 
         var destination = document.createElement("td");
