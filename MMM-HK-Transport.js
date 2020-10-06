@@ -99,7 +99,7 @@ Module.register("MMM-HK-Transport", {
         const chiWords = splitStr.filter((string) => REGEX_CHINESE.test(string));
         const engWords = splitStr.filter((string) => !REGEX_CHINESE.test(string)).slice(1).join(' ');
 
-        if (langTable[config.language])
+        if (langTable[config.language] && chiWords.length)
             return chiWords;
         return engWords;
     },
