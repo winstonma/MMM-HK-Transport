@@ -13,7 +13,6 @@ Module.register("MMM-HK-Transport", {
                 stopID: 'HKStop_KowloonCentralPostOffice_N_1'
             }
         ],
-        stopName: 'MMM-HK-Transport',
         timeFormat: (config.timeFormat !== 24) ? "h:mm" : "HH:mm",
         lines: '',
         direction: '',
@@ -145,12 +144,7 @@ Module.register("MMM-HK-Transport", {
     createStopHeader: function (stop) {
         // Auto-create MagicMirror header
         var header = document.createElement("header");
-        if (stop == null) {
-            header.innerHTML = this.config.stopName;
-        } else {
-            header.innerHTML = this.getDisplayString(stop.name);
-        }
-
+        header.innerHTML = (stop == null) ? this.name : this.getDisplayString(stop.name);
         return header;
     },
 
