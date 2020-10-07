@@ -1,5 +1,5 @@
 /* Magic Mirror
- * Module: MMM-HK-Transport
+ * Node Helper: MMM-HK-Transport
  *
  * By Winston / https://github.com/winstonma
  * AGPL-3.0 Licensed.
@@ -41,7 +41,7 @@ module.exports = NodeHelper.create({
                 const {body} = await got(url, {
                     responseType: 'json'
                 });
-                this.createFetcher(body.stops[0].id, config);
+                this.createFetcher(body.stops[0].id, stopInfo.stopID, config);
             } catch (error) {
                 this.sendSocketNotification("FETCH_ERROR", {
                     stopID: stopInfo.stopID,
@@ -56,9 +56,10 @@ module.exports = NodeHelper.create({
      * Otherwise it reuses the existing one.
      *
      * @param {object} stopID The stopID.
+     * @param {object} originalStopID The stopID inputted by the user.
      * @param {object} config The configuration object.
      */
-    createFetcher: function (stopID, config) {
+    createFetcher: function (stopID, originalStopID, config) {
         const url = config.cityMapperURL + stopID || "";
         const reloadInterval = config.reloadInterval || 5 * 60 * 1000;
 
@@ -68,9 +69,9 @@ module.exports = NodeHelper.create({
         }
 
         let fetcher;
-        if (typeof this.fetchers[stopID] === "undefined") {
+        if (typeof this.fetchers[originalStopID] === "undefined") {
             Log.log("Create new CityMapper fetcher for url: " + url + " - Interval: " + reloadInterval);
-            fetcher = new ETAFetcher(url, reloadInterval);
+            fetcher = new ETAFetcher(url, originalStopID, reloadInterval);
 
             fetcher.onReceive(() => {
 				this.broadcastFeeds();
@@ -83,10 +84,10 @@ module.exports = NodeHelper.create({
                 });
             });
 
-            this.fetchers[stopID] = fetcher;
+            this.fetchers[originalStopID] = fetcher;
         } else {
             Log.log("Use existing CityMapper fetcher for url: " + url);
-            fetcher = this.fetchers[stopID];
+            fetcher = this.fetchers[originalStopID];
             fetcher.setReloadInterval(reloadInterval);
             fetcher.broadcastItems();
         }
