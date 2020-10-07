@@ -6,7 +6,7 @@
  */
 
 const validUrl = require("valid-url");
-const Fetcher = require("./fetcher.js");
+const ETAFetcher = require("./etafetcher.js");
 const NodeHelper = require("node_helper");
 const got = require('got');
 
@@ -71,7 +71,7 @@ module.exports = NodeHelper.create({
         var fetcher;
         if (typeof self.fetchers[stopID] === "undefined") {
             console.log("Create new CityMapper fetcher for url: " + url + " - Interval: " + reloadInterval);
-            fetcher = new Fetcher(url, reloadInterval);
+            fetcher = new ETAFetcher(url, reloadInterval);
 
             fetcher.onReceive(function (fetcher) {
                 self.broadcastFeeds();
