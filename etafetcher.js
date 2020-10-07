@@ -10,11 +10,12 @@ const got = require('got');
 /**
  * Responsible for requesting an update on the set interval and broadcasting the data.
  *
- * @param {string} url URL of the news feed.
+ * @param {string} url URL of the ETA feed.
+ * @param {string} stopID stop ID of the stop
  * @param {number} reloadInterval Reload interval in milliseconds.
  * @class
  */
-const ETAFetcher = function (url, reloadInterval) {
+const ETAFetcher = function (url, stopID, reloadInterval) {
     const self = this;
 
     let reloadTimer = null;
@@ -91,7 +92,7 @@ const ETAFetcher = function (url, reloadInterval) {
 			Log.info("ETA-Fetcher: No item to broadcast yet.");
 			return;
         }
-        Log.info(`ETA-Fetcher: Broadcasting item for stop ID ${item.stops[0].id}`);
+        Log.info(`ETA-Fetcher: Broadcasting item for stop ID ${stopID}`);
 		itemsReceivedCallback(self);
     };
 
