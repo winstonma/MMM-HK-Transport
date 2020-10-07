@@ -2,7 +2,7 @@
  * Module: MMM-HK-Transport
  *
  * By Winston / https://github.com/winstonma
- * MIT Licensed.
+ * AGPL-3.0 Licensed.
  */
 
 Module.register("MMM-HK-Transport", {
@@ -40,7 +40,6 @@ Module.register("MMM-HK-Transport", {
     },
 
     start: function () {
-        var self = this;
         Log.info("Starting module: " + this.name);
 
         this.cityMapperData = {};
@@ -48,8 +47,8 @@ Module.register("MMM-HK-Transport", {
         this.registerStops();
     },
 
-    /* registerStops()
-     * registers the stops to be used by the backend.
+    /**
+     * Registers the stops to be used by the backend.
      */
     registerStops: function () {
         this.config.stops.forEach(stop => {
@@ -60,15 +59,54 @@ Module.register("MMM-HK-Transport", {
         });
     },
 
+    /**
+    * Generate an ordered list of items for this configured module.
+    *
+    * @param {object} etas An object with ETAs returned by the node helper.
+    */
+    generateETA: function (etas) {
+        this.cityMapperData = Object.entries(etas)
+            .filter(([stopID,]) => this.subscribedToETA(stopID))
+            .map(([k, v]) => {
+                const stop = v.stops[0];
+                const stopInfo = stop.services.map(service => {
+                    const route = stop.routes.find(element => element.id == service.route_id);
+                    return {
+                        route: route,
+                        service: service
+                    }
+                }).sort((a, b) => (a.route.id > b.route.id) ? 1 : -1);
+
+                stop.stopInfo = stopInfo;
+                delete stop.services;
+                delete stop.routes;
+
+                return [k, v];
+            })
+            .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+    },
+
+    /**
+     * Check if this module is configured to show this ETA.
+     *
+     * @param {string} stopID stopID to check.
+     * @returns {boolean} True if it is subscribed, false otherwise
+     */
+    subscribedToETA: function (stopID) {
+        return this.config.stops.some(stop => stop.stopID === stopID);
+    },
+
+    // Override socket notification handler.
     socketNotificationReceived: function (notification, payload) {
         if (notification === "STOP_ITEMS") {
-            this.cityMapperData = payload;
+            this.generateETA(payload);
             this.updateDom();
         }
     },
 
+    // Override dom generator.
     getDom: function () {
-        var wrapper = document.createElement("div");
+        const wrapper = document.createElement("div");
 
         if (Object.keys(this.cityMapperData).length === 0) {
             wrapper.appendChild(this.createStopHeader(null));
@@ -128,16 +166,8 @@ Module.register("MMM-HK-Transport", {
 
         table.appendChild(this.createSpacerRow());
 
-        const stopInfo = stop.services.map(service => {
-            const route = stop.routes.find(element => element.id == service.route_id);
-            return {
-                route: route,
-                service: service
-            }
-        });
-
         // This loop create the table that display the content
-        stopInfo.forEach(element => {
+        stop.stopInfo.forEach(element => {
             const rowContent = this.createDataRow(element);
             if (rowContent)
                 table.appendChild(rowContent);
