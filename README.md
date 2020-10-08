@@ -68,6 +68,7 @@ Sample configuration entry for your `~/MagicMirror/config/config.js` with option
         module: 'MMM-HK-Transport',
         position: 'top_left',
         config: {
+            stopID: 'HKStop_KowloonCentralPostOffice_N_1',
             showLabelRow: true, // Show or hide column headers
             reloadInterval: 60000 	// How often should the information be updated? (In milliseconds)
         }
