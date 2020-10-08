@@ -41,7 +41,7 @@ module.exports = NodeHelper.create({
                 const {body} = await got(url, {
                     responseType: 'json'
                 });
-                this.createFetcher(body.stops[0].id, stopInfo.stopID, config);
+                this.createFetcher(body.stops[0].id, stopInfo, config);
             } catch (error) {
                 this.sendSocketNotification("FETCH_ERROR", {
                     stopID: stopInfo.stopID,
@@ -56,12 +56,12 @@ module.exports = NodeHelper.create({
      * Otherwise it reuses the existing one.
      *
      * @param {object} stopID The stopID.
-     * @param {object} originalStopID The stopID inputted by the user.
+     * @param {object} stopInfo The stopInfo.
      * @param {object} config The configuration object.
      */
-    createFetcher: function (stopID, originalStopID, config) {
+    createFetcher: function (stopID, stopInfo, config) {
         const url = config.cityMapperURL + stopID || "";
-        const reloadInterval = config.reloadInterval || 5 * 60 * 1000;
+        const reloadInterval = stopInfo.reloadInterval || config.reloadInterval || 5 * 60 * 1000;
 
         if (!validUrl.isUri(url)) {
             this.sendSocketNotification("INCORRECT_URL", url);
@@ -69,9 +69,9 @@ module.exports = NodeHelper.create({
         }
 
         let fetcher;
-        if (typeof this.fetchers[originalStopID] === "undefined") {
+        if (typeof this.fetchers[stopInfo.stopID] === "undefined") {
             Log.log("Create new CityMapper fetcher for url: " + url + " - Interval: " + reloadInterval);
-            fetcher = new ETAFetcher(url, originalStopID, reloadInterval);
+            fetcher = new ETAFetcher(url, stopInfo.stopID, reloadInterval);
 
             fetcher.onReceive(() => {
 				this.broadcastFeeds();
@@ -84,10 +84,10 @@ module.exports = NodeHelper.create({
                 });
             });
 
-            this.fetchers[originalStopID] = fetcher;
+            this.fetchers[stopInfo.stopID] = fetcher;
         } else {
             Log.log("Use existing CityMapper fetcher for url: " + url);
-            fetcher = this.fetchers[originalStopID];
+            fetcher = this.fetchers[stopInfo.stopID];
             fetcher.setReloadInterval(reloadInterval);
             fetcher.broadcastItems();
         }
