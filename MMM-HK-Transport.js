@@ -14,7 +14,7 @@ Module.register("MMM-HK-Transport", {
             }
         ],
         timeFormat: (config.timeFormat !== 24) ? "h:mm" : "HH:mm",
-        labelRow: true,
+        showLabelRow: true,
         cityMapperURL: 'https://citymapper.com/api/1/departures?headways=1&region_id=hk-hongkong&ids=',
         reloadInterval: 1 * 60 * 1000       // every minute
     },
@@ -154,9 +154,9 @@ Module.register("MMM-HK-Transport", {
         table.classList.add("small", "table");
         table.border = '0';
 
-        const labelRow = (typeof stopConfig.labelRow !== 'undefined') ? stopConfig.labelRow : this.config.labelRow;
+        const showLabelRow = (typeof stopConfig.showLabelRow !== 'undefined') ? stopConfig.showLabelRow : this.config.showLabelRow;
 
-        if (labelRow) {
+        if (showLabelRow) {
             table.appendChild(this.createLabelRow());
         }
 
