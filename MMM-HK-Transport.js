@@ -14,8 +14,6 @@ Module.register("MMM-HK-Transport", {
             }
         ],
         timeFormat: (config.timeFormat !== 24) ? "h:mm" : "HH:mm",
-        lines: '',
-        direction: '',
         labelRow: true,
         cityMapperURL: 'https://citymapper.com/api/1/departures?headways=1&region_id=hk-hongkong&ids=',
         reloadInterval: 1 * 60 * 1000       // every minute
@@ -68,10 +66,11 @@ Module.register("MMM-HK-Transport", {
             .filter(([stopID,]) => this.subscribedToETA(stopID))
             .map(([k, v]) => {
                 const stop = v.stops[0];
+
+                // Merge sevices and routes into one
                 const stopInfo = stop.services.map(service => {
-                    const route = stop.routes.find(element => element.id == service.route_id);
                     return {
-                        route: route,
+                        route: stop.routes.find(element => element.id == service.route_id),
                         service: service
                     }
                 }).sort((a, b) => (a.route.id > b.route.id) ? 1 : -1);
@@ -109,16 +108,17 @@ Module.register("MMM-HK-Transport", {
 
         if (Object.keys(this.cityMapperData).length === 0) {
             wrapper.appendChild(this.createStopHeader(null));
-            var text = document.createElement("div");
+            let text = document.createElement("div");
             text.innerHTML = this.translate("LOADING");
             text.className = "small dimmed";
             wrapper.appendChild(text);
             return wrapper;
         }
 
-        Object.values(this.cityMapperData).forEach(stop => {
+        Object.entries(this.cityMapperData).forEach(([stopID, stop]) => {
             wrapper.appendChild(this.createStopHeader(stop.stops[0]));
-            wrapper.appendChild(this.createStops(stop.stops[0]));
+            const stopConfig = this.config.stops.find(stop => stop.stopID == stopID);
+            wrapper.appendChild(this.createStops(stopConfig, stop.stops[0]));
         });
 
         return wrapper;
@@ -143,18 +143,20 @@ Module.register("MMM-HK-Transport", {
 
     createStopHeader: function (stop) {
         // Auto-create MagicMirror header
-        var header = document.createElement("header");
+        let header = document.createElement("header");
         header.innerHTML = (stop == null) ? this.name : this.getDisplayString(stop.name);
         return header;
     },
 
-    createStops: function (stop) {
+    createStops: function (stopConfig, stop) {
         // Start creating connections table
-        var table = document.createElement("table");
+        let table = document.createElement("table");
         table.classList.add("small", "table");
         table.border = '0';
 
-        if (this.config.labelRow) {
+        const labelRow = (typeof stopConfig.labelRow !== 'undefined') ? stopConfig.labelRow : this.config.labelRow;
+
+        if (labelRow) {
             table.appendChild(this.createLabelRow());
         }
 
@@ -172,19 +174,19 @@ Module.register("MMM-HK-Transport", {
     },
 
     createLabelRow: function () {
-        var labelRow = document.createElement("tr");
+        let labelRow = document.createElement("tr");
 
-        var lineLabel = document.createElement("th");
+        let lineLabel = document.createElement("th");
         lineLabel.className = "line";
         lineLabel.innerHTML = this.translate("LINE");
         labelRow.appendChild(lineLabel);
 
-        var destinationLabel = document.createElement("th");
+        let destinationLabel = document.createElement("th");
         destinationLabel.className = "destination";
         destinationLabel.innerHTML = this.translate("DESTINATION");
         labelRow.appendChild(destinationLabel);
 
-        var departureLabel = document.createElement("th");
+        let departureLabel = document.createElement("th");
         departureLabel.className = "departure";
         departureLabel.innerHTML = this.translate("DEPARTURE");
         labelRow.appendChild(departureLabel);
@@ -193,9 +195,9 @@ Module.register("MMM-HK-Transport", {
     },
 
     createSpacerRow: function () {
-        var spacerRow = document.createElement("tr");
+        let spacerRow = document.createElement("tr");
 
-        var spacerHeader = document.createElement("th");
+        let spacerHeader = document.createElement("th");
         spacerHeader.className = "spacerRow";
         spacerHeader.setAttribute("colSpan", "3");
         spacerHeader.innerHTML = "";
@@ -205,9 +207,9 @@ Module.register("MMM-HK-Transport", {
     },
 
     createNoTramRow: function () {
-        var noTramRow = document.createElement("tr");
+        let noTramRow = document.createElement("tr");
 
-        var noTramHeader = document.createElement("th");
+        let noTramHeader = document.createElement("th");
         noTramHeader.className = "noTramRow";
         noTramHeader.setAttribute("colSpan", "3");
         noTramHeader.innerHTML = this.translate("NO-TRAMS");
@@ -236,21 +238,21 @@ Module.register("MMM-HK-Transport", {
         if (!etaArray)
             return null;
 
-        var row = document.createElement("tr");
+        let row = document.createElement("tr");
 
-        var line = document.createElement("td");
+        let line = document.createElement("td");
         line.className = "line";
         line.innerHTML = routeObj.route.name;
         if (routeObj.route.brand === "GMBBus")
             line.innerHTML += '<sup><i class="fas fa-shuttle-van"></i></sup>';
         row.appendChild(line);
 
-        var destination = document.createElement("td");
+        let destination = document.createElement("td");
         destination.className = "destination";
         destination.innerHTML = this.getDisplayString(routeObj.service.headsign);
         row.appendChild(destination);
 
-        var departure = document.createElement("td");
+        let departure = document.createElement("td");
         departure.className = "departure";
         departure.innerHTML = etaArray.toString();
         row.appendChild(departure);
