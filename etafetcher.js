@@ -54,55 +54,55 @@ const ETAFetcher = function (url, stopID, reloadInterval) {
         })();
     };
 
-	/**
-	 * Schedule the timer for the next update.
-	 */
-	const scheduleTimer = function () {
-		clearTimeout(reloadTimer);
-		reloadTimer = setTimeout(function () {
-			fetchETAs();
-		}, reloadInterval);
-	};
+    /**
+     * Schedule the timer for the next update.
+     */
+    const scheduleTimer = function () {
+        clearTimeout(reloadTimer);
+        reloadTimer = setTimeout(function () {
+            fetchETAs();
+        }, reloadInterval);
+    };
 
     /* public methods */
 
-	/**
-	 * Update the reload interval, but only if we need to increase the speed.
-	 *
-	 * @param {number} interval Interval for the update in milliseconds.
-	 */
-	this.setReloadInterval = function (interval) {
-		if (interval > 1000 && interval < reloadInterval) {
-			reloadInterval = interval;
-		}
-	};
+    /**
+     * Update the reload interval, but only if we need to increase the speed.
+     *
+     * @param {number} interval Interval for the update in milliseconds.
+     */
+    this.setReloadInterval = function (interval) {
+        if (interval > 1000 && interval < reloadInterval) {
+            reloadInterval = interval;
+        }
+    };
 
-	/**
-	 * Initiate fetchETAs();
-	 */
+    /**
+     * Initiate fetchETAs();
+     */
     this.startFetch = function () {
         fetchETAs();
     };
 
-	/**
-	 * Broadcast the existing item.
-	 */
+    /**
+     * Broadcast the existing item.
+     */
     this.broadcastItems = function () {
-		if (item.length <= 0) {
-			Log.info("ETA-Fetcher: No item to broadcast yet.");
-			return;
+        if (item.length <= 0) {
+            Log.info("ETA-Fetcher: No item to broadcast yet.");
+            return;
         }
         Log.info(`ETA-Fetcher: Broadcasting item for stop ID ${stopID}`);
-		itemsReceivedCallback(self);
+        itemsReceivedCallback(self);
     };
 
-	this.onReceive = function (callback) {
-		itemsReceivedCallback = callback;
-	};
+    this.onReceive = function (callback) {
+        itemsReceivedCallback = callback;
+    };
 
-	this.onError = function (callback) {
-		fetchFailedCallback = callback;
-	};
+    this.onError = function (callback) {
+        fetchFailedCallback = callback;
+    };
 
     this.url = function () {
         return url;
