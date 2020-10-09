@@ -222,11 +222,9 @@ Module.register("MMM-HK-Transport", {
         let etaArray;
 
         if (routeObj.service.next_departures) {
-            const hoursFromNow = moment.duration(moment(routeObj.service.next_departures[0]).diff(moment()))
-                .asHours();
-            if (hoursFromNow < 1) {
-                etaArray = routeObj.service.next_departures.map(etaStr => moment(etaStr).format(this.config.timeFormat));
-            }
+            etaArray = routeObj.service.next_departures
+                .filter(data => moment.duration(moment(data).diff(moment())).asHours() < 1)
+                .map(etaStr => moment(etaStr).format(this.config.timeFormat));
         } else if (routeObj.service.headway_seconds_range) {
             const [rangeBottom, rangeTop] = routeObj.service.headway_seconds_range.map(seconds => Math.floor(seconds / 60));
             const midStr = (rangeBottom == rangeTop) ? rangeBottom : `${rangeBottom}—${rangeTop}`;
@@ -235,7 +233,7 @@ Module.register("MMM-HK-Transport", {
             etaArray = routeObj.service.live_departures_seconds.map(seconds => moment().seconds(seconds).format(this.config.timeFormat));
         }
 
-        if (!etaArray)
+        if (etaArray.length == 0)
             return null;
 
         let row = document.createElement("tr");
