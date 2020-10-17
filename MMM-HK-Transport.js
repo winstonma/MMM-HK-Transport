@@ -107,7 +107,7 @@ Module.register("MMM-HK-Transport", {
         const wrapper = document.createElement("div");
 
         if (Object.keys(this.cityMapperData).length === 0) {
-            wrapper.appendChild(this.createStopHeader(null));
+            this.data.header = this.name;
             let text = document.createElement("div");
             text.innerHTML = this.translate("LOADING");
             text.className = "small dimmed";
@@ -116,7 +116,7 @@ Module.register("MMM-HK-Transport", {
         }
 
         Object.entries(this.cityMapperData).forEach(([stopID, stop]) => {
-            wrapper.appendChild(this.createStopHeader(stop.stops[0]));
+            this.data.header = this.getDisplayString(stop.stops[0].name);
             const stopConfig = this.config.stops.find(stop => stop.stopID == stopID);
             wrapper.appendChild(this.createStops(stopConfig, stop.stops[0]));
         });
@@ -139,13 +139,6 @@ Module.register("MMM-HK-Transport", {
         if (langTable[config.language] && chiWords.length)
             return chiWords;
         return engWords;
-    },
-
-    createStopHeader: function (stop) {
-        // Auto-create MagicMirror header
-        let header = document.createElement("header");
-        header.innerHTML = (stop == null) ? this.name : this.getDisplayString(stop.name);
-        return header;
     },
 
     createStops: function (stopConfig, stop) {
