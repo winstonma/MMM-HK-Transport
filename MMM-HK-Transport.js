@@ -10,7 +10,7 @@ Module.register("MMM-HK-Transport", {
     defaults: {
         stops: [
             {
-                stopID: 'HKStop_KowloonCentralPostOffice_N_1'
+                stopID: 'HKStop_KowloonCentralPostOffice_N_1_2'
             }
         ],
         timeFormat: (config.timeFormat !== 24) ? "h:mm" : "HH:mm",

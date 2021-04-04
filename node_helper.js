@@ -5,7 +5,6 @@
  * AGPL-3.0 Licensed.
  */
 
-const validUrl = require("valid-url");
 const ETAFetcher = require("./etafetcher.js");
 const NodeHelper = require("node_helper");
 const got = require('got');
@@ -63,7 +62,9 @@ module.exports = NodeHelper.create({
         const url = config.cityMapperURL + stopID || "";
         const reloadInterval = stopInfo.reloadInterval || config.reloadInterval || 5 * 60 * 1000;
 
-        if (!validUrl.isUri(url)) {
+        try {
+			new URL(url);
+		} catch (error) {
             this.sendSocketNotification("INCORRECT_URL", url);
             return;
         }
