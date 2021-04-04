@@ -52,7 +52,7 @@ Sample minimum configuration entry for your `~/MagicMirror/config/config.js`:
         config: {
             stops: [
                 {
-                    stopID: 'HKStop_KowloonCentralPostOffice_N_1'
+                    stopID: 'HKStop_KowloonCentralPostOffice_N_1_2'
                 }
             ]
         }
@@ -68,7 +68,7 @@ Sample configuration entry for your `~/MagicMirror/config/config.js` with option
         module: 'MMM-HK-Transport',
         position: 'top_left',
         config: {
-            stopID: 'HKStop_KowloonCentralPostOffice_N_1',
+            stopID: 'HKStop_KowloonCentralPostOffice_N_1_2',
             showLabelRow: true, // Show or hide column headers
             reloadInterval: 60000 	// How often should the information be updated? (In milliseconds)
         }
@@ -77,14 +77,14 @@ Sample configuration entry for your `~/MagicMirror/config/config.js` with option
     ...
 
 ## Figuring out the correct stopID
-1. Open your web browser and navigate to the [CityMapper Hong Kong Web Page](https://citymapper.com/hong-kong).
-2. Go to `LINES` search box enter the bus line number.
+1. Open your web browser and navigate to the [CityMapper Hong Kong Web Page](https://citymapper.com/hong-kong/status).
+2. In the search box, enter the bus line number.
 3. Once you can see the stop in your browser, click the stop.
-4. When a new page is being displayed, check the link (e.g. https://citymapper.com/hong-kong/bus/stops/HKStop_KowloonCentralPostOffice_N_1). Note the last portion of the link (e.g. `HKStop_KowloonCentralPostOffice_N_1`)is the `StopID` you are looking for.
+4. When a new page is being displayed, check the link (e.g. https://citymapper.com/hong-kong/bus/stops/HKStop_KowloonCentralPostOffice_N_1_2). Note the last portion of the link (e.g. `HKStop_KowloonCentralPostOffice_N_1_2`)is the `StopID` you are looking for.
 
 ## Config Options
 | **Option** | **Default** | **Description** |
 | :---: | :---: | --- |
-| stopID | HKStop_KowloonCentralPostOffice_N_1 | <BR>Which stop would you like to have displayed? <BR><EM> Default: HKStop_KowloonCentralPostOffice_N_1</EM><P> |
+| stopID | HKStop_KowloonCentralPostOffice_N_1_2 | <BR>Which stop would you like to have displayed? <BR><EM> Default: HKStop_KowloonCentralPostOffice_N_1_2</EM><P> |
 | showLabelRow<BR>`optional` | true | <BR> Show or hide column headers<BR> <EM>Possible values: true, false</EM><P> |
 | reloadInterval<BR>`optional`  | 60000 | <BR> How often should the information be updated? (In milliseconds) <BR><EM> Default: Every minute </EM><P> |
