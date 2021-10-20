@@ -107,7 +107,6 @@ Module.register("MMM-HK-Transport", {
         const wrapper = document.createElement("div");
 
         if (Object.keys(this.cityMapperData).length === 0) {
-            this.data.header = this.name;
             let text = document.createElement("div");
             text.innerHTML = this.translate("LOADING");
             text.className = "small dimmed";
@@ -116,13 +115,17 @@ Module.register("MMM-HK-Transport", {
         }
 
         Object.entries(this.cityMapperData).forEach(([stopID, stop]) => {
-            this.data.header = this.getDisplayString(stop.stops[0].name);
             const stopConfig = this.config.stops.find(stop => stop.stopID == stopID);
             wrapper.appendChild(this.createStops(stopConfig, stop.stops[0]));
         });
 
         return wrapper;
     },
+
+    // Override getHeader method.
+	getHeader: function () {
+        return (Object.keys(this.cityMapperData).length === 0) ? this.name : this.getDisplayString(Object.entries(this.cityMapperData)[0][1].stops[0].name);
+	},
 
     getDisplayString: function (input) {
         const langTable = {
