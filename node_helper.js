@@ -32,7 +32,7 @@ module.exports = NodeHelper.create({
      * @param {object} config The configuration object.
      */
     getStopInfo: function (stopInfo, config) {
-        const baseURL = "https://citymapper.com/api/3/stopinfo?region_id=hk-hongkong&ids=";
+        const baseURL = "https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring?MonitoringRef=";
 
         const url = baseURL + stopInfo.stopID;
         (async () => {
