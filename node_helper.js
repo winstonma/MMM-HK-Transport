@@ -39,7 +39,7 @@ module.exports = NodeHelper.create({
             try {
                 const {body} = await got(url, {
                     responseType: 'json'
-			headers: apiKey: Y7wX9uguTCgXUvmLYan4MEdeyR5GSBQp				
+			headers: apiKey: slsveMui7bnEciEv4lDi49yefA76UXE1				
                 });
                 this.createFetcher(body.stops[0].id, stopInfo, config);
             } catch (error) {
