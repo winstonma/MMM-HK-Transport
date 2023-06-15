@@ -224,8 +224,13 @@ Module.register("MMM-IdF-Transport", {
     createDataRow: function (routeObj) {
         if (!routeObj.service.ExpectedDepartureTime)
             return null;
-        let etaArray = routeObj.service.ExpectedDepartureTime;
-        etaArray = etaArray.match(/(\d{2}:){2}\d{2}/)[0]
+        let etaArray = new Date(routeObj.service.ExpectedDepartureTime);
+        const options = {
+            hour: "2-digit",
+            minute: "2-digit"
+          };
+          const timetable = new Intl.DateTimeFormat("fr", options).format;
+        // etaArray = etaArray.match(/(\d{2}:){2}\d{2}/)[0]
 
         /*if (routeObj.service.ExpectedDepartureTime) {
             etaArray = routeObj.service.ExpectedDepartureTime
@@ -258,7 +263,7 @@ Module.register("MMM-IdF-Transport", {
 
         let departure = document.createElement("td");
         departure.className = "departure";
-        departure.innerHTML = etaArray.toString();
+        departure.innerHTML = timetable(etaArray);
         row.appendChild(departure);
 
         return row;
