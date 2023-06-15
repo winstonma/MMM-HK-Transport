@@ -12,7 +12,7 @@ Lastly, why not join in on our discussions at the official [MagicMirror<sup>2</s
 `fr`             |  `en`
 :-------------------------:|:-------------------------:
 ![French version](screenshots/screenshot_fr.png)  |  ![English version](screenshots/screenshot_en.png) |
-`zh-tw` or `zh-hk`             |  `zh-tw` or `zh-hk`
+`zh-tw` or `zh-hk`             |  
 :-------------------------:|:-------------------------:
 ![Chinese version](screenshots/screenshot_zh.png)  |   |
 
