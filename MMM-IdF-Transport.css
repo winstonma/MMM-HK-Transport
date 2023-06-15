@@ -1,19 +1,19 @@
-.MMM-HK-Transport .table {
+.MMM-IdF-Transport .table {
     border-spacing: 0px 0px;
     border-collapse: separate;
     text-align: left;
 	}
 
-.MMM-HK-Transport .spacerRow {
+.MMM-IdF-Transport .spacerRow {
 	padding-bottom: 5px;
 	}
 
-.MMM-HK-Transport .destination {
+.MMM-IdF-Transport .destination {
 	font-weight: normal;
 	color: white;
 	}
 	
-.MMM-HK-Transport .line {
+.MMM-IdF-Transport .line {
     border-spacing: 10px 0px;
     border-collapse: separate;
     text-align: left;
@@ -22,14 +22,14 @@
 	width: 60px;
 	}
 	
-.MMM-HK-Transport .departure {
+.MMM-IdF-Transport .departure {
 	padding-left: 10px;
 	text-align: right;
 	font-weight: normal;
 	color: white;
 	}
 	
-.MMM-HK-Transport .noTramRow {
+.MMM-IdF-Transport .noTramRow {
 	font-weight: normal;
 	color: white;
 	}

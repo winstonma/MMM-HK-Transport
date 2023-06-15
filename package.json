@@ -1,14 +1,14 @@
 {
-  "name": "MMM-HK-Transport",
+  "name": "MMM-IdF-Transport",
   "version": "1.3.0",
-  "description": "MagicMirror² module - Hong Kong Transport station monitor",
+  "description": "MagicMirror² module - Île de France station monitor",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/winstonma/MMM-HK-Transport.git"
   },
   "keywords": [
     "MagicMirror",
-    "HK-Transport",
+    "IdF-Transport",
     "magic mirror",
     "smart mirror",
     "public transport",
@@ -21,6 +21,6 @@
   },
   "homepage": "https://github.com/winstonma/MMM-HK-Transport#readme",
   "dependencies": {
-    "got": "^11.8.2"
+    "got": "^11.8.6"
   }
 }

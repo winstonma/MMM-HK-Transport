@@ -1,11 +1,11 @@
 /* Magic Mirror
- * Module: MMM-HK-Transport
+ * Module: MMM-IdF-Transport
  *
  * By Winston / https://github.com/winstonma
  * AGPL-3.0 Licensed.
  */
 
-Module.register("MMM-HK-Transport", {
+Module.register("MMM-IdF-Transport", {
 
     defaults: {
         stops: [
@@ -15,7 +15,7 @@ Module.register("MMM-HK-Transport", {
         ],
         timeFormat: (config.timeFormat !== 24) ? "h:mm" : "HH:mm",
         showLabelRow: true,
-        cityMapperURL: 'https://citymapper.com/api/1/departures?headways=1&region_id=hk-hongkong&ids=',
+        primURL: 'https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring?MonitoringRef=',
         reloadInterval: 1 * 60 * 1000       // every minute
     },
 
@@ -33,13 +33,13 @@ Module.register("MMM-HK-Transport", {
     },
 
     getStyles: function () {
-        return ["MMM-HK-Transport.css", "font-awesome.css"];
+        return ["MMM-IdF-Transport.css", "font-awesome.css"];
     },
 
     start: function () {
         Log.info("Starting module: " + this.name);
 
-        this.cityMapperData = {};
+        this.primData = {};
 
         this.registerStops();
     },
@@ -48,6 +48,8 @@ Module.register("MMM-HK-Transport", {
      * Registers the stops to be used by the backend.
      */
     registerStops: function () {
+        // TODO remove debug log
+        Log.log("Config is \:\n" + config);
         this.config.stops.forEach(stop => {
             this.sendSocketNotification("ADD_STOP", {
                 stop: stop,
@@ -62,26 +64,30 @@ Module.register("MMM-HK-Transport", {
     * @param {object} etas An object with ETAs returned by the node helper.
     */
     generateETA: function (etas) {
-        this.cityMapperData = Object.entries(etas)
+        // TODO remove debug log
+        //Log.log("ETAS :\n" + etas)
+        this.primData = Object.entries(etas)
             .filter(([stopID,]) => this.subscribedToETA(stopID))
             .map(([k, v]) => {
-                const stop = v.stops[0];
-
+                const stop = v;
+                // [0].MonitoredVehicleJourney.MonitoredCall.ExpectedArrivalTime
                 // Merge sevices and routes into one
-                const stopInfo = stop.services.map(service => {
+                const stopInfo = stop.Siri.ServiceDelivery.StopMonitoringDelivery[0].MonitoredStopVisit.map(service => {
                     return {
-                        route: stop.routes.find(element => element.id == service.route_id),
-                        service: service
+                        route: service.MonitoredVehicleJourney.LineRef.value,//.find(element => element.id == service.route_id),
+                        service: service.MonitoredVehicleJourney.MonitoredCall
                     }
-                }).sort((a, b) => (a.route.id > b.route.id) ? 1 : -1);
+                }).sort((a, b) => (a.route > b.route) ? 1 : -1);
 
+                stop.stopID = stop.Siri.ServiceDelivery.StopMonitoringDelivery[0].MonitoredStopVisit[0].MonitoringRef.value;
                 stop.stopInfo = stopInfo;
-                delete stop.services;
-                delete stop.routes;
+                delete stop.Siri;
 
                 return [k, v];
             })
             .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+        // TODO remove debug log
+        Log.log("ETA Generated");
     },
 
     /**
@@ -106,7 +112,7 @@ Module.register("MMM-HK-Transport", {
     getDom: function () {
         const wrapper = document.createElement("div");
 
-        if (Object.keys(this.cityMapperData).length === 0) {
+        if (Object.keys(this.primData).length === 0) {
             let text = document.createElement("div");
             text.innerHTML = this.translate("LOADING");
             text.className = "small dimmed";
@@ -114,9 +120,9 @@ Module.register("MMM-HK-Transport", {
             return wrapper;
         }
 
-        Object.entries(this.cityMapperData).forEach(([stopID, stop]) => {
+        Object.entries(this.primData).forEach(([stopID, stop]) => {
             const stopConfig = this.config.stops.find(stop => stop.stopID == stopID);
-            wrapper.appendChild(this.createStops(stopConfig, stop.stops[0]));
+            wrapper.appendChild(this.createStops(stopConfig, stop));
         });
 
         return wrapper;
@@ -124,7 +130,7 @@ Module.register("MMM-HK-Transport", {
 
     // Override getHeader method.
 	getHeader: function () {
-        return (Object.keys(this.cityMapperData).length === 0) ? this.name : this.getDisplayString(Object.entries(this.cityMapperData)[0][1].stops[0].name);
+        return (Object.keys(this.primData).length === 0) ? this.name : this.getDisplayString(Object.entries(this.primData)[0][0]);
 	},
 
     getDisplayString: function (input) {
@@ -215,10 +221,12 @@ Module.register("MMM-HK-Transport", {
     },
 
     createDataRow: function (routeObj) {
-        let etaArray;
+        if (!routeObj.service.ExpectedDepartureTime)
+            return null;
+        let etaArray = routeObj.service.ExpectedDepartureTime;
 
-        if (routeObj.service.next_departures) {
-            etaArray = routeObj.service.next_departures
+        /*if (routeObj.service.ExpectedDepartureTime) {
+            etaArray = routeObj.service.ExpectedDepartureTime
                 .filter(data => moment.duration(moment(data).diff(moment())).asHours() < 1)
                 .map(etaStr => moment(etaStr).format(this.config.timeFormat));
         } else if (routeObj.service.headway_seconds_range) {
@@ -227,7 +235,7 @@ Module.register("MMM-HK-Transport", {
             etaArray = this.translate("EVERY") + midStr + this.translate("MINUTES");
         } else if (routeObj.service.live_departures_seconds) {
             etaArray = routeObj.service.live_departures_seconds.map(seconds => moment().seconds(seconds).format(this.config.timeFormat));
-        }
+        }*/
 
         if (etaArray.length == 0)
             return null;
@@ -236,14 +244,14 @@ Module.register("MMM-HK-Transport", {
 
         let line = document.createElement("td");
         line.className = "line";
-        line.innerHTML = routeObj.route.name;
+        line.innerHTML = routeObj.route;
         if (routeObj.route.brand === "GMBBus")
             line.innerHTML += '<sup><i class="fas fa-shuttle-van"></i></sup>';
         row.appendChild(line);
 
         let destination = document.createElement("td");
         destination.className = "destination";
-        destination.innerHTML = this.getDisplayString(routeObj.service.headsign);
+        destination.innerHTML = this.getDisplayString(routeObj.service.DestinationDisplay[0].value);
         row.appendChild(destination);
 
         let departure = document.createElement("td");

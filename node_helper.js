@@ -35,13 +35,19 @@ module.exports = NodeHelper.create({
         const baseURL = "https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring?MonitoringRef=";
 
         const url = baseURL + stopInfo.stopID;
+        // TODO remove debug log
+        Log.log("Connecting to : " + url);
+        // TODO remove debug log
+        Log.log(stopInfo);
         (async () => {
             try {
                 const {body} = await got(url, {
-                    responseType: 'json'
-			headers: apiKey: slsveMui7bnEciEv4lDi49yefA76UXE1				
+                    responseType : 'json',
+			        headers : {apikey : 'slsveMui7bnEciEv4lDi49yefA76UXE1'}
                 });
-                this.createFetcher(body.stops[0].id, stopInfo, config);
+                // TODO remove debug log
+                Log.log(body.Siri.ServiceDelivery.StopMonitoringDelivery[0].MonitoredStopVisit[0].MonitoredVehicleJourney.MonitoredCall.ExpectedArrivalTime)
+                this.createFetcher(stopInfo.stopID, stopInfo, config);
             } catch (error) {
                 this.sendSocketNotification("FETCH_ERROR", {
                     stopID: stopInfo.stopID,
@@ -60,7 +66,8 @@ module.exports = NodeHelper.create({
      * @param {object} config The configuration object.
      */
     createFetcher: function (stopID, stopInfo, config) {
-        const url = config.cityMapperURL + stopID || "";
+        Log.log("Create Fetcher")
+        const url = config.primURL + stopID || "";
         const reloadInterval = stopInfo.reloadInterval || config.reloadInterval || 5 * 60 * 1000;
 
         try {
@@ -72,7 +79,7 @@ module.exports = NodeHelper.create({
 
         let fetcher;
         if (this.fetchers[stopInfo.stopID] === undefined) {
-            Log.log("Create new CityMapper fetcher for url: " + url + " - Interval: " + reloadInterval);
+            Log.log("Create new PRIM fetcher for url: " + url + " - Interval: " + reloadInterval);
             fetcher = new ETAFetcher(url, stopInfo.stopID, reloadInterval);
 
             fetcher.onReceive(() => {
@@ -88,7 +95,7 @@ module.exports = NodeHelper.create({
 
             this.fetchers[stopInfo.stopID] = fetcher;
         } else {
-            Log.log("Use existing CityMapper fetcher for url: " + url);
+            Log.log("Use existing PRIM fetcher for url: " + url);
             fetcher = this.fetchers[stopInfo.stopID];
             fetcher.setReloadInterval(reloadInterval);
             fetcher.broadcastItems();

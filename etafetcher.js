@@ -41,9 +41,12 @@ const ETAFetcher = function (url, stopID, reloadInterval) {
         (async () => {
             try {
                 const {body} = await got(url, {
-                    responseType: 'json'
+                    responseType: 'json',
+			        headers : {apikey : 'slsveMui7bnEciEv4lDi49yefA76UXE1'}
                 });
                 item = body;
+                // TODO remove debug log
+                // Log.log(body.Siri.ServiceDelivery.StopMonitoringDelivery[0])
                 self.broadcastItems();
                 scheduleTimer();
             } catch (error) {
