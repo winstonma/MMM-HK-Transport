@@ -26,6 +26,7 @@ Module.register("MMM-IdF-Transport", {
 
     getTranslations: function () {
         return {
+            "fr": "translations/fr.json",
             "en": "translations/en.json",
             "zh-hk": "translations/zh.json",
             "zh-tw": "translations/zh.json"
