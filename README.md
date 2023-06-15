@@ -45,19 +45,18 @@ This module has been programmed to allow for multiple instances. Simply add more
 Sample minimum configuration entry for your `~/MagicMirror/config/config.js`:
 
     ...
-    
+
     {
-        module: 'MMM-HK-Transport',
+        module: 'MMM-IdF-Transport',
         position: 'top_left',
         config: {
+            apiKey: 'someapikey', // You need to make a key on https://prim.iledefrance-mobilites.fr/fr
             stops: [
-                {
-                    stopID: 'HKStop_KowloonCentralPostOffice_N_1_2'
-                }
-            ]
+                { stopID: 'STIF:StopPoint:Q:473921:' }
+            ],
         }
     } 				// If this isn't your last module, add a comma after the bracket
-    
+
     ...
 
 Sample configuration entry for your `~/MagicMirror/config/config.js` with optional parameters:
@@ -65,13 +64,17 @@ Sample configuration entry for your `~/MagicMirror/config/config.js` with option
     ...
     
     {
-        module: 'MMM-HK-Transport',
-        position: 'top_left',
-        config: {
-            stopID: 'HKStop_KowloonCentralPostOffice_N_1_2',
-            showLabelRow: true, // Show or hide column headers
-            reloadInterval: 60000 	// How often should the information be updated? (In milliseconds)
-        }
+			module: 'MMM-IdF-Transport',
+			position: 'top_left',
+			config: {
+				apiKey: 'someapikey', // You need to make a key on https://prim.iledefrance-mobilites.fr/fr
+				stops: [
+					{ stopID: 'STIF:StopPoint:Q:473921:' },
+					{ stopID: 'STIF:StopPoint:Q:474017:' }
+				],
+				showLabelRow: true, // Show or hide column headers
+				reloadInterval: 60000 	// How often should the information be updated? (In milliseconds)
+			}
     } 						// If this isn't your last module, add a comma after the bracket
     
     ...
