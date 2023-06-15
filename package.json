@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/winstonma/MMM-HK-Transport#readme",
   "dependencies": {
-    "got": "^11.8.6"
+    "got": "^11.8.6",
+    "csv-parser": "^3.0.0"
   }
 }

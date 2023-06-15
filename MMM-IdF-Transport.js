@@ -75,7 +75,7 @@ Module.register("MMM-IdF-Transport", {
                 // Merge sevices and routes into one
                 const stopInfo = stop.Siri.ServiceDelivery.StopMonitoringDelivery[0].MonitoredStopVisit.map(service => {
                     return {
-                        route: service.MonitoredVehicleJourney.LineRef.value,//.find(element => element.id == service.route_id),
+                        route: service.MonitoredVehicleJourney.LineRef,
                         service: service.MonitoredVehicleJourney.MonitoredCall
                     }
                 }).sort((a, b) => (a.route > b.route) ? 1 : -1);
@@ -251,9 +251,9 @@ Module.register("MMM-IdF-Transport", {
 
         let line = document.createElement("td");
         line.className = "line";
-        line.innerHTML = routeObj.route;
-        if (routeObj.route.brand === "GMBBus")
-            line.innerHTML += '<sup><i class="fas fa-shuttle-van"></i></sup>';
+        line.innerHTML = `${routeObj.route.TransportMode} ${routeObj.route.ShortName_Line}`;
+        /*if (routeObj.route.brand === "GMBBus")
+            line.innerHTML += '<sup><i class="fas fa-shuttle-van"></i></sup>';*/
         row.appendChild(line);
 
         let destination = document.createElement("td");

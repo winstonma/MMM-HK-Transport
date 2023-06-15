@@ -15,7 +15,7 @@ const got = require('got');
  * @param {number} reloadInterval Reload interval in milliseconds.
  * @class
  */
-const ETAFetcher = function (url, stopID, reloadInterval, apiKey) {
+const ETAFetcher = function (url, stopID, reloadInterval, apiKey, lineDict) {
     const self = this;
 
     let reloadTimer = null;
@@ -45,8 +45,9 @@ const ETAFetcher = function (url, stopID, reloadInterval, apiKey) {
 			        headers : {apikey : apiKey}
                 });
                 item = body;
-                // TODO remove debug log
-                // Log.log(body.Siri.ServiceDelivery.StopMonitoringDelivery[0])
+                body.Siri.ServiceDelivery.StopMonitoringDelivery[0].MonitoredStopVisit.forEach(element => {
+                    element.MonitoredVehicleJourney.LineRef = lineDict[element.MonitoredVehicleJourney.LineRef.value]
+                });
                 self.broadcastItems();
                 scheduleTimer();
             } catch (error) {
@@ -56,6 +57,10 @@ const ETAFetcher = function (url, stopID, reloadInterval, apiKey) {
             }
         })();
     };
+
+    const processLines = function (item) {
+
+    }
 
     /**
      * Schedule the timer for the next update.

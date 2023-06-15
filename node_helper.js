@@ -9,11 +9,31 @@ const ETAFetcher = require("./etafetcher.js");
 const NodeHelper = require("node_helper");
 const got = require('got');
 const Log = require("../../js/logger");
+const csv = require('csv-parser')
+const fs = require('fs')
+
+let lines = {};
+
+const linesReference = function() {
+    Log.log("Start Reference");
+    const results = [];
+    fs.createReadStream('modules/MMM-IdF-Transport/referentiel-des-lignes-de-transport-en-commun-dile-de-france.csv')
+        .pipe(csv({ separator: '\;'}))
+        .on('data', (data) => results.push(data))
+        .on('end', () => {
+            results.forEach(function(item){
+                lines[`STIF\:Line\:\:${item.ID_Line}\:`] = item;
+           });
+        });
+}
 
 module.exports = NodeHelper.create({
+    
+
     // Override start method.
     start: function () {
         Log.log("Starting node helper for: " + this.name);
+        linesReference();
         this.fetchers = [];
     },
 
@@ -80,7 +100,7 @@ module.exports = NodeHelper.create({
         let fetcher;
         if (this.fetchers[stopInfo.stopID] === undefined) {
             Log.log("Create new PRIM fetcher for url: " + url + " - Interval: " + reloadInterval);
-            fetcher = new ETAFetcher(url, stopInfo.stopID, reloadInterval, config.apiKey);
+            fetcher = new ETAFetcher(url, stopInfo.stopID, reloadInterval, config.apiKey, lines);
 
             fetcher.onReceive(() => {
 				this.broadcastFeeds();
