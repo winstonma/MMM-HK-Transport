@@ -80,7 +80,7 @@ module.exports = NodeHelper.create({
         let fetcher;
         if (this.fetchers[stopInfo.stopID] === undefined) {
             Log.log("Create new PRIM fetcher for url: " + url + " - Interval: " + reloadInterval);
-            fetcher = new ETAFetcher(url, stopInfo.stopID, reloadInterval);
+            fetcher = new ETAFetcher(url, stopInfo.stopID, reloadInterval, config.apiKey);
 
             fetcher.onReceive(() => {
 				this.broadcastFeeds();

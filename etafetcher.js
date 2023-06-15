@@ -15,7 +15,7 @@ const got = require('got');
  * @param {number} reloadInterval Reload interval in milliseconds.
  * @class
  */
-const ETAFetcher = function (url, stopID, reloadInterval) {
+const ETAFetcher = function (url, stopID, reloadInterval, apiKey) {
     const self = this;
 
     let reloadTimer = null;
@@ -42,7 +42,7 @@ const ETAFetcher = function (url, stopID, reloadInterval) {
             try {
                 const {body} = await got(url, {
                     responseType: 'json',
-			        headers : {apikey : 'slsveMui7bnEciEv4lDi49yefA76UXE1'}
+			        headers : {apikey : apiKey}
                 });
                 item = body;
                 // TODO remove debug log

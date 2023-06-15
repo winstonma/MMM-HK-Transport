@@ -131,7 +131,7 @@ Module.register("MMM-IdF-Transport", {
 
     // Override getHeader method.
 	getHeader: function () {
-        return (Object.keys(this.primData).length === 0) ? this.name : this.getDisplayString(Object.entries(this.primData)[0][0]);
+        return (Object.keys(this.primData).length === 0) ? this.name : this.getDisplayString(Object.entries(this.primData)[0][1].stopInfo[0].service.StopPointName[0].value);
 	},
 
     getDisplayString: function (input) {
@@ -225,6 +225,7 @@ Module.register("MMM-IdF-Transport", {
         if (!routeObj.service.ExpectedDepartureTime)
             return null;
         let etaArray = routeObj.service.ExpectedDepartureTime;
+        etaArray = etaArray.match(/(\d{2}:){2}\d{2}/)[0]
 
         /*if (routeObj.service.ExpectedDepartureTime) {
             etaArray = routeObj.service.ExpectedDepartureTime
