@@ -30,6 +30,7 @@ A working installation of [MagicMirror<sup>2</sup>](https://github.com/MichMich/
 ## Dependencies
   * npm
   * [got](https://github.com/sindresorhus/got)
+  * [csv-parse](https://github.com/mafintosh/csv-parser)
 
 ## Installation
 Go to MagicMirror folder and execute the following command:
