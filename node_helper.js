@@ -43,7 +43,7 @@ module.exports = NodeHelper.create({
             try {
                 const {body} = await got(url, {
                     responseType : 'json',
-			        headers : {apikey : 'slsveMui7bnEciEv4lDi49yefA76UXE1'}
+			        headers : {apikey : config.apiKey}
                 });
                 // TODO remove debug log
                 Log.log(body.Siri.ServiceDelivery.StopMonitoringDelivery[0].MonitoredStopVisit[0].MonitoredVehicleJourney.MonitoredCall.ExpectedArrivalTime)
