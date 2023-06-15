@@ -65,8 +65,6 @@ Module.register("MMM-IdF-Transport", {
     * @param {object} etas An object with ETAs returned by the node helper.
     */
     generateETA: function (etas) {
-        // TODO remove debug log
-        //Log.log("ETAS :\n" + etas)
         this.primData = Object.entries(etas)
             .filter(([stopID,]) => this.subscribedToETA(stopID))
             .map(([k, v]) => {
@@ -87,8 +85,6 @@ Module.register("MMM-IdF-Transport", {
                 return [k, v];
             })
             .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
-        // TODO remove debug log
-        Log.log("ETA Generated");
     },
 
     /**
@@ -250,8 +246,23 @@ Module.register("MMM-IdF-Transport", {
         let row = document.createElement("tr");
 
         let line = document.createElement("td");
+        let busImage = "https://data.iledefrance.fr/api/explore/v2.1/catalog/datasets/referentiel-des-lignes-de-transport-en-commun-dile-de-france/files/37b0b83646222f1e3a45084a6eb6a7f7"
+        let imgScale = "50%"
+        let lineHtml = routeObj.route.ShortName_Line;
+
+        if (routeObj.route.Picto) {
+            lineHtml = `<div class="container"><img src="${routeObj.route.Picto}" alt="Snow" style="width:${imgScale};"></div>`;
+        } else {
+            if (routeObj.route.TransportMode.normalize() === 'bus') {
+                lineHtml =  `<div class="container">
+                    <img src=${busImage} alt="Snow" style="width:${imgScale};">
+                    <div class="centered">${routeObj.route.ShortName_Line}</div>
+                </div>`;
+            }
+        }
+        
         line.className = "line";
-        line.innerHTML = `${routeObj.route.TransportMode} ${routeObj.route.ShortName_Line}`;
+        line.innerHTML = lineHtml;
         /*if (routeObj.route.brand === "GMBBus")
             line.innerHTML += '<sup><i class="fas fa-shuttle-van"></i></sup>';*/
         row.appendChild(line);
