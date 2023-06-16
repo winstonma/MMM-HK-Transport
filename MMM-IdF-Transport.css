@@ -37,7 +37,8 @@
 .MMM-IdF-Transport .bus {
 	position: relative;
 	text-align: center;
-	color: black;
+	vertical-align:top;
+	color: white;
 	}
 
 /* Container holding the image and the text */

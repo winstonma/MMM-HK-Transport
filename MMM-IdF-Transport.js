@@ -256,7 +256,7 @@ Module.register("MMM-IdF-Transport", {
             if (routeObj.route.TransportMode.normalize() === 'bus') {
                 lineHtml =  `<div class="bus">
                     <img src=${busImage} alt="Snow" style="width:${imgScale}; background-color:white">
-                    <div class="centered">${routeObj.route.ShortName_Line}</div>
+                    <sup>${routeObj.route.ShortName_Line}</sup>
                 </div>`;
             }
         }
