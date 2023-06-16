@@ -66,26 +66,25 @@ Module.register("MMM-IdF-Transport", {
     */
     generateETA: function (etas) {
         this.primData = Object.entries(etas)
-            .filter(([stopID,]) => this.subscribedToETA(stopID))
+            .filter(([stopID, value]) => this.subscribedToETA(stopID) && value.Siri)
             .map(([k, v]) => {
-                const stop = v;
-                // [0].MonitoredVehicleJourney.MonitoredCall.ExpectedArrivalTime
-                // Merge sevices and routes into one
-                const stopInfo = stop.Siri.ServiceDelivery.StopMonitoringDelivery[0].MonitoredStopVisit.map(service => {
-                    return {
-                        route: service.MonitoredVehicleJourney.LineRef,
-                        service: service.MonitoredVehicleJourney.MonitoredCall
-                    }
-                }).sort((a, b) => (a.route > b.route) ? 1 : -1);
+                    const stop = v;
+                    // Merge sevices and routes into one
+                    const stopInfo = stop.Siri.ServiceDelivery.StopMonitoringDelivery[0].MonitoredStopVisit.map(service => {
+                        return {
+                            route: service.MonitoredVehicleJourney.LineRef,
+                            service: service.MonitoredVehicleJourney.MonitoredCall
+                        }
+                    }).sort((a, b) => (a.route > b.route) ? 1 : -1);
 
-                stop.stopID = stop.Siri.ServiceDelivery.StopMonitoringDelivery[0].MonitoredStopVisit[0].MonitoringRef.value;
-                stop.stopInfo = stopInfo;
-                delete stop.Siri;
+                    stop.stopID = stop.Siri.ServiceDelivery.StopMonitoringDelivery[0].MonitoredStopVisit[0].MonitoringRef.value;
+                    stop.stopInfo = stopInfo;
+                    delete stop.Siri;
 
-                return [k, v];
+                    return [k, v];
             })
             .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
-    },
+},
 
     /**
      * Check if this module is configured to show this ETA.
