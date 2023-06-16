@@ -22,6 +22,21 @@ const linesReference = function() {
         .on('data', (data) => results.push(data))
         .on('end', () => {
             results.forEach(function(item){
+                let busImage = "https://data.iledefrance.fr/api/explore/v2.1/catalog/datasets/referentiel-des-lignes-de-transport-en-commun-dile-de-france/files/37b0b83646222f1e3a45084a6eb6a7f7";
+                let imgScale = "50%";
+                item.lineHtml = item.ShortName_Line;
+        
+                if (item.Picto) {
+                    item.lineHtml = `<div class="container"><img src="${item.Picto}" alt="Snow" style="width:${imgScale};"></div>`;
+                } else {
+                    if (item.TransportMode.normalize() === 'bus') {
+                        item.lineHtml =  `<div class="bus">
+                            <img src=${busImage} alt="Snow" style="width:${imgScale}; background-color:white">
+                            <sup>${item.ShortName_Line}</sup>
+                        </div>`;
+                    }
+                }
+
                 lines[`STIF\:Line\:\:${item.ID_Line}\:`] = item;
            });
         });

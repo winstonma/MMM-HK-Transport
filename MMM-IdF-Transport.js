@@ -246,23 +246,12 @@ Module.register("MMM-IdF-Transport", {
         let row = document.createElement("tr");
 
         let line = document.createElement("td");
-        let busImage = "https://data.iledefrance.fr/api/explore/v2.1/catalog/datasets/referentiel-des-lignes-de-transport-en-commun-dile-de-france/files/37b0b83646222f1e3a45084a6eb6a7f7";
-        let imgScale = "50%";
-        let lineHtml = routeObj.route.ShortName_Line;
-
-        if (routeObj.route.Picto) {
-            lineHtml = `<div class="container"><img src="${routeObj.route.Picto}" alt="Snow" style="width:${imgScale};"></div>`;
-        } else {
-            if (routeObj.route.TransportMode.normalize() === 'bus') {
-                lineHtml =  `<div class="bus">
-                    <img src=${busImage} alt="Snow" style="width:${imgScale}; background-color:white">
-                    <sup>${routeObj.route.ShortName_Line}</sup>
-                </div>`;
-            }
-        }
         
         line.className = "line";
-        line.innerHTML = lineHtml;
+
+        line.innerHTML = routeObj.route.ID_Line
+        if (line.innerHTML)
+            line.innerHTML = routeObj.route.lineHtml;
         /*if (routeObj.route.brand === "GMBBus")
             line.innerHTML += '<sup><i class="fas fa-shuttle-van"></i></sup>';*/
         row.appendChild(line);
